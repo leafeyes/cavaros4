@@ -1,0 +1,51 @@
+{% extends "front/master.html" %}
+
+{% block content %}
+    <div class="container white" id="main-content">
+        <div class="row">
+            <div class="col-md-6" id="content-left">
+                <center>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <h1>CAVAROS</h1>
+                    <h3>Project Management and Revision Control</h3>
+                </center>
+            </div>
+            <div class="col-md-6" id="content-right">
+                <center>
+
+
+                    <div id="login-box">
+                        <div style="font-size: 14px; text-align: left; color: #8b0000;">
+                            {{ ERROR }}
+
+
+                        </div>
+                        <form action="/login/" method="post"  >{% csrf_token %}
+                           <br>
+                           <input type="text" class="form-control" placeholder="Username" name="txt_username">
+                           <br>
+                           <input type="password" class="form-control" placeholder="Password" name="txt_password">
+                            <br>
+
+                            <input type="submit" value = "Login" class="btn btn-default" />
+
+
+                            <a href="/register/"><h3> Sign up</a> | <a href="/changePassword/">Change password</h3></a>
+                            <br>
+
+                        </form>
+
+
+
+                    </div>
+
+                </center>
+            </div>
+        </div>
+    </div>
+{% endblock %}

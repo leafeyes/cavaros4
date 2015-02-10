@@ -1,0 +1,277 @@
+{% extends "front/nav_afterLogin.html" %}
+
+{% block content %}
+    <script type="text/javascript"
+            src="http://code.jquery.com/jquery-2.0.0.min.js">
+    </script>
+    <style>
+        #btnMemberSelect .btn{
+            background-color: #fff;
+            color: #000;
+            border-color: #ccc;
+            font-family: arial;
+            font-size: 16px;
+        }
+        #btnMemberSelect .btn.active {
+            color: #fff;
+            background-color: #41A317;
+            font-family: arial;
+
+        }
+        #btnMemberSelect .btn span.glyphicon {
+            opacity: 0;
+        }
+        #btnMemberSelect .btn.active span.glyphicon {
+            opacity: 1;
+        }
+
+        #btnMemberSelect2 .btn{
+            background-color: #fff;
+            color: #000;
+            border-color: #ccc;
+            font-family: arial;
+            font-size: 16px;
+        }
+        #btnMemberSelect2 .btn.active {
+            color: #fff;
+            background-color: #41A317;
+            font-family: arial;
+
+        }
+        #btnMemberSelect2 .btn span.glyphicon {
+            opacity: 0;
+        }
+        #btnMemberSelect2 .btn.active span.glyphicon {
+            opacity: 1;
+        }
+
+
+        #btnMemberSelect3 .btn{
+            background-color: #fff;
+            color: #000;
+            border-color: #ccc;
+            font-family: arial;
+            font-size: 16px;
+        }
+        #btnMemberSelect3 .btn.active {
+            color: #fff;
+            background-color: #41A317;
+            font-family: arial;
+
+        }
+        #btnMemberSelect3 .btn span.glyphicon {
+            opacity: 0;
+        }
+        #btnMemberSelect3 .btn.active span.glyphicon {
+            opacity: 1;
+        }
+    </style>
+    <script type="text/javascript">
+        function reply_click(clicked_id)
+        {
+            $("#addMoreMember").attr("action", "/addMember2/" + clicked_id+"/");
+        }
+    </script>
+    <script type="text/javascript">
+        function addSection_click(clicked_id)
+        {
+            $("#addMoreSection").attr("action", "/addSection2/" + clicked_id+"/");
+        }
+    </script>
+    <script type="text/javascript">
+        function addTask_click(clicked_id)
+        {
+
+            $("#addMoreTask").attr("action", "/addTask/" + clicked_id+"/");
+        }
+    </script>
+
+    <script>
+
+        $(document).ready(function(){
+
+
+            $("#search").keyup(function(){
+
+                $.ajax({
+                    url: "/searchProject",
+                    type: "GET",
+                    data:{
+
+                        'search_text':$('#search').val()
+                    },
+                    success:function(result){
+                        $("#results").html(result);
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function(){
+            $("#search_member").keyup(function(){
+
+                $.ajax({
+                    url: "/searchMember",
+                    type: "GET",
+                    data:{
+
+                        'search_text':$('#search_member').val()
+                    },
+                    success:function(result){
+                        $("#Member_results").html(result);
+                    }
+                });
+            });
+
+
+
+        });
+        $(document).ready(function(){
+            $("#search_member2").keyup(function(){
+                $.ajax({
+                    url: "/search_member2",
+                    type: "GET",
+                    data:{
+
+                        'search_text2':$('#search_member2').val()
+                    },
+                    success:function(result2){
+                        $("#Member_results2").html(result2);
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $("#search_member_section").keyup(function(){
+
+                $.ajax({
+                    url: "/search_member_section",
+                    type: "GET",
+                    data:{
+
+                        'search_textSection':$('#search_member_section').val()
+                    },
+                    success:function(result3){
+                        $("#Member_resultsSection").html(result3);
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $("#search_member_task").keyup(function(){
+                $.ajax({
+                    url: "/search_member_task",
+                    type: "GET",
+                    data:{
+
+                        'search_textTask':$('#search_member_task').val()
+                    },
+                    success:function(result4){
+                        $("#Member_resultsTask").html(result4);
+                    }
+                });
+            });
+        });
+
+
+
+
+
+
+
+    </script>
+    <link href="/site_media/css/style.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/site_media/css/search/normalize.css">
+    <link rel="stylesheet" href="/site_media/css/search/stylesheet.css">
+    <!--[if IE 8]><script src="js/es5.js"></script><![endif]-->
+    <script src="/site_media/js/jquery.js"></script>
+    <script src="/site_media/js/index.js"></script>
+
+		<!-- CONTENT -->
+
+
+
+		<div class="container white" id="main-content" style="letter-spacing: 1px;">
+        <br>
+        <div role="tabpanel">
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#profile" aria-controls="home" role="tab" data-toggle="tab">Profile</a></li>
+                <li role="presentation"><a href="/projectManagerDashboard/" style="margin:5px; font-size: 18px; background-color: #ECECEC;">Owned Projects</a></li>
+                <li role="presentation"><a href="/assignedProject/" style="margin:5px; font-size: 18px ; background-color: #ECECEC;">Assigned Tasks</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="profile">
+                    <div style="margin-left: 30px; margin-right:30px;">
+                        <div class="row">
+                            <br>
+                            <div class="col-xs-6" >
+                                <h3 id="thankHead"><b>{{ USERNAME }}'s Profile</b></h3>
+                            </div>
+                            <div class="col-xs-6" align="right" style="margin-top:30px;">
+                                <a href="/changePassword/">
+                                    <button class="btn btn-warning" type="button" style="font-size: 15px; font-family: arial;">
+                                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> change password
+                                    </button>
+                                </a>
+                                <a href="/profiles_edit/{{ USERNAME }}">
+                                    <button class="btn btn-warning" type="button" style="font-size: 15px; font-family: arial;">
+                                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>  edit profile
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-2" id="profile-left">
+
+                                <img src="/site_media/img/icon-profile.png" class="img-responsive">
+                                <br>
+
+
+                            </div>
+                            <div class="col-xs-10" id="profile-right">
+
+                                <div id="profile2">
+                                    <div class="well" style="letter-spacing: 1px;">
+                                        Name : {{ FIRSTNAME }} {{ LASTNAME }}
+                                        <br>
+
+                                        E-mail : {{ EMAIL }}
+
+                                        <br>
+
+                                        Username : {{ USERNAME }}
+                                        <br>
+                                        Password : ******
+
+                                        <br>
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <br> <br>
+                     </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+		</div>
+
+		</div>
+
+{% endblock %}

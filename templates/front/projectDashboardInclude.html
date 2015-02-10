@@ -1,0 +1,127 @@
+<script type="text/javascript"
+        src="http://code.jquery.com/jquery-2.0.0.min.js">
+</script>
+<style>
+    #btnMemberSelect .btn{
+        background-color: #fff;
+        color: #000;
+        border-color: #ccc;
+        font-family: arial;
+        font-size: 16px;
+    }
+    #btnMemberSelect .btn.active {
+        color: #fff;
+        background-color: #41A317;
+        font-family: arial;
+
+    }
+    #btnMemberSelect .btn span.glyphicon {
+        opacity: 0;
+    }
+    #btnMemberSelect .btn.active span.glyphicon {
+        opacity: 1;
+    }
+
+    #btnMemberSelect2 .btn{
+        background-color: #fff;
+        color: #000;
+        border-color: #ccc;
+        font-family: arial;
+        font-size: 16px;
+    }
+    #btnMemberSelect2 .btn.active {
+        color: #fff;
+        background-color: #41A317;
+        font-family: arial;
+
+    }
+    #btnMemberSelect2 .btn span.glyphicon {
+        opacity: 0;
+    }
+    #btnMemberSelect2 .btn.active span.glyphicon {
+        opacity: 1;
+    }    </style>
+
+<script>
+
+    $(document).ready(function(){
+
+        $("#search").keyup(function(){
+
+            $.ajax({
+                url: "/searchProject",
+                type: "GET",
+                data:{
+
+                    'search_text':$('#search').val()
+                },
+                success:function(result){
+                    $("#results").html(result);
+                }
+            });
+        });
+    });
+
+    $(document).ready(function(){
+        $("#search_member").keyup(function(){
+
+            $.ajax({
+                url: "/searchMember",
+                type: "GET",
+                data:{
+
+                    'search_text':$('#search_member').val()
+                },
+                success:function(result){
+                    $("#Member_results").html(result);
+                }
+            });
+        });
+    });
+    $(document).ready(function(){
+        $("#search_member2").keyup(function(){
+            $.ajax({
+                url: "/search_member2",
+                type: "GET",
+                data:{
+
+                    'search_text2':$('#search_member2').val()
+                },
+                success:function(result2){
+                    $("#Member_results2").html(result2);
+                }
+            });
+        });
+    });
+
+
+    $(document).ready(function(){
+        $("#search").keyup(function(){
+            var str = $("#results").val();
+            if(str==" "){
+                $("#results").hide();
+            }
+            else{
+                $("#results").show();
+            }
+        });
+    });
+
+    $('#select-beast').selectize({
+        create: true,
+        sortField: {
+            field: 'text',
+            direction: 'asc'
+        },
+        dropdownParent: 'body'
+    });
+
+
+</script>
+<link href="/site_media/css/style.css" rel="stylesheet">
+
+<link rel="stylesheet" href="/site_media/css/search/normalize.css">
+<link rel="stylesheet" href="/site_media/css/search/stylesheet.css">
+<!--[if IE 8]><script src="js/es5.js"></script><![endif]-->
+<script src="/site_media/js/jquery.js"></script>
+<script src="/site_media/js/index.js"></script>

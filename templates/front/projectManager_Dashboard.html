@@ -1,0 +1,878 @@
+{% extends "front/nav_afterLogin.html" %}
+{% block content %}
+    <script type="text/javascript"
+            src="http://code.jquery.com/jquery-2.0.0.min.js">
+    </script>
+    <style>
+        #btnMemberSelect .btn{
+            background-color: #fff;
+            color: #000;
+            border-color: #ccc;
+            font-family: arial;
+            font-size: 16px;
+        }
+        #btnMemberSelect .btn.active {
+            color: #fff;
+            background-color: #41A317;
+            font-family: arial;
+
+        }
+        #btnMemberSelect .btn span.glyphicon {
+            opacity: 0;
+        }
+        #btnMemberSelect .btn.active span.glyphicon {
+            opacity: 1;
+        }
+
+        #btnMemberSelect2 .btn{
+            background-color: #fff;
+            color: #000;
+            border-color: #ccc;
+            font-family: arial;
+            font-size: 16px;
+        }
+        #btnMemberSelect2 .btn.active {
+            color: #fff;
+            background-color: #41A317;
+            font-family: arial;
+
+        }
+        #btnMemberSelect2 .btn span.glyphicon {
+            opacity: 0;
+        }
+        #btnMemberSelect2 .btn.active span.glyphicon {
+            opacity: 1;
+        }
+
+
+        #btnMemberSelect3 .btn{
+            background-color: #fff;
+            color: #000;
+            border-color: #ccc;
+            font-family: arial;
+            font-size: 16px;
+        }
+        #btnMemberSelect3 .btn.active {
+            color: #fff;
+            background-color: #41A317;
+            font-family: arial;
+
+        }
+        #btnMemberSelect3 .btn span.glyphicon {
+            opacity: 0;
+        }
+        #btnMemberSelect3 .btn.active span.glyphicon {
+            opacity: 1;
+        }
+    </style>
+    <script type="text/javascript">
+        function reply_click(clicked_id)
+        {
+            $("#addMoreMember").attr("action", "/addMember2/" + clicked_id+"/");
+        }
+    </script>
+    <script type="text/javascript">
+        function addSection_click(clicked_id)
+        {
+            $("#addMoreSection").attr("action", "/addSection2/" + clicked_id+"/");
+        }
+    </script>
+    <script type="text/javascript">
+        function addTask_click(clicked_id)
+        {
+
+            $("#addMoreTask").attr("action", "/addTask/" + clicked_id+"/");
+        }
+        $(document).ready(function(){
+
+
+            $('#username').hide();
+            var username = $('#username').val();
+            $("#myProfile").click(function(){
+                $("#myProfile").attr("href", "/profiles/"+username+"/");
+            });
+        });
+    </script>
+
+    <script>
+
+        $(document).ready(function(){
+
+
+            $("#search").keyup(function(){
+
+                $.ajax({
+                    url: "/searchProject",
+                    type: "GET",
+                    data:{
+
+                        'search_text':$('#search').val()
+                    },
+                    success:function(result){
+                        $("#results").html(result);
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function(){
+            $("#search_member").keyup(function(){
+
+                $.ajax({
+                    url: "/searchMember",
+                    type: "GET",
+                    data:{
+
+                        'search_text':$('#search_member').val()
+                    },
+                    success:function(result){
+                        $("#Member_results").html(result);
+                    }
+                });
+            });
+
+
+
+        });
+        $(document).ready(function(){
+            $("#search_member2").keyup(function(){
+                $.ajax({
+                    url: "/search_member2",
+                    type: "GET",
+                    data:{
+
+                        'search_text2':$('#search_member2').val()
+                    },
+                    success:function(result2){
+                        $("#Member_results2").html(result2);
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $("#search_member_section").keyup(function(){
+
+                $.ajax({
+                    url: "/search_member_section",
+                    type: "GET",
+                    data:{
+
+                        'search_textSection':$('#search_member_section').val()
+                    },
+                    success:function(result3){
+                        $("#Member_resultsSection").html(result3);
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $("#search_member_task").keyup(function(){
+                $.ajax({
+                    url: "/search_member_task",
+                    type: "GET",
+                    data:{
+
+                        'search_textTask':$('#search_member_task').val()
+                    },
+                    success:function(result4){
+                        $("#Member_resultsTask").html(result4);
+                    }
+                });
+            });
+        });
+
+
+
+
+
+
+
+    </script>
+    <link href="/site_media/css/style.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/site_media/css/search/normalize.css">
+    <link rel="stylesheet" href="/site_media/css/search/stylesheet.css">
+    <!--[if IE 8]><script src="js/es5.js"></script><![endif]-->
+    <script src="/site_media/js/jquery.js"></script>
+    <script src="/site_media/js/index.js"></script>
+
+    <!-- CONTENT -->
+    <div class="container white" id="main-content" >
+    <br>
+    <div role="tabpanel">
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" ><a href="/profiles/{{ USERID }}/" style="margin:5px; font-size: 18px; background-color: #ECECEC;">Profile</a></li>
+            <li role="presentation" class="active"><a  aria-controls="home" role="tab" data-toggle="tab"  href="#dashBoard">Owned Projects</a></li>
+            <li role="presentation"><a href="/assignedProject/" style="margin:5px; font-size: 18px ; background-color: #ECECEC;">Assigned Tasks</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id=#"dashBoard">
+            <input type="text" value="{{ USERNAME }}" id="username">
+            <h3 id="thankHead" align="left"><b>{{ USERNAME }}'s Dashboard</b></h3>
+
+            <hr>
+
+
+            <!-- modal -->
+
+            <!-- add task modal-->
+            <div class="modal fade" id="addTaskT" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+
+                        <div class="modal-body" >
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <ul class="list-group" id="taskList-left">
+
+                                        <form id="addMoreTask" action="/addTask/" method="post" style="font-family: thaisansneue; font-size: 25px;" >
+                                            {% csrf_token %}
+
+                                            <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                                <span class="glyphicon glyphicon-th-list" aria-hidden="true" style=" font-size: 20px;"></span> Task Information
+                                            </div>
+                                            <li class="list-group-item"  >
+                                                Task name:
+                                                <input type="text" class="form-control" placeholder="section name" name="txt_taskname" required style="font-family: thaisansneue; font-size: 20px;">
+                                            </li>
+                                            <li class="list-group-item">
+                                                Description:
+                                                <input type="text" class="form-control" placeholder="Description name" name="txt_taskdesc" required style="font-family: thaisansneue; font-size: 20px;">
+                                            </li>
+                                            <li class="list-group-item">
+                                                Start date:
+                                                <input type="date" id="taskStartdatepicker" placeholder="ex. 2015-01-10" class="form-control"  name="taskstart_date" required style="font-family: thaisansneue; font-size: 20px;">
+                                            </li>
+                                            <li class="list-group-item">
+                                                Due date:
+                                                <input type="date" id="taskStartdatepicker" placeholder="ex. 2015-01-10" class="form-control"  name="taskend_date" required style="font-family: thaisansneue; font-size: 20px;">
+                                            </li>
+                                            <li class="list-group-item">
+                                                Member:
+                                                <p id="s4"></p>
+                                            </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="panel panel-default" id="taskList-left">
+                                        <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll" style="height: 350px;">
+
+                                            <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                                <span class="glyphicon glyphicon-user" aria-hidden="true" style=" font-size: 20px;"></span> Add Memebrs
+                                            </div>
+                                            <div style="padding: 15px;" >
+                                                <div class="input-group ">
+
+                                                    <input class="form-control" type="text" id="search_member_task" name="search_member_section"  placeholder="search members" style="font-family: thaisansneue; font-size: 20px;" >
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" id="buttonClick" type="submit">
+                                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                                </button>
+                                            </span>
+
+                                                </div>
+                                                <br>
+                                                <center>
+                                                    <div class="list-group col-sm-11" id="Member_resultsTask">
+
+
+                                                    </div>
+
+
+                                                </center>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+
+                            <button type="submit" class="btn btn-primary">
+                                Add
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Cancel
+                            </button>
+                        </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+            <!-- -->
+            <!-- add task modal-->
+            <div class="modal fade" id="addTaskT" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+
+                        <div class="modal-body" >
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <ul class="list-group" id="taskList-left">
+
+                                        <form id="addMoreTask" action="/addTask/" method="post" style="font-family: thaisansneue; font-size: 25px;" >
+                                            {% csrf_token %}
+
+                                            <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                                <span class="glyphicon glyphicon-th-list" aria-hidden="true" style=" font-size: 20px;"></span> Task Information
+                                            </div>
+                                            <li class="list-group-item"  >
+                                                Task name:
+                                                <input type="text" class="form-control" placeholder="section name" name="txt_taskname" required style="font-family: thaisansneue; font-size: 20px;">
+                                            </li>
+                                            <li class="list-group-item">
+                                                Description:
+                                                <input type="text" class="form-control" placeholder="Description name" name="txt_taskdesc" required style="font-family: thaisansneue; font-size: 20px;">
+                                            </li>
+                                            <li class="list-group-item">
+                                                Start date:
+                                                <input type="date" id="taskStartdatepicker" placeholder="ex. 2015-01-10" class="form-control"  name="taskstart_date" required style="font-family: thaisansneue; font-size: 20px;">
+                                            </li>
+                                            <li class="list-group-item">
+                                                Due date:
+                                                <input type="date" id="taskStartdatepicker" placeholder="ex. 2015-01-10" class="form-control"  name="taskend_date" required style="font-family: thaisansneue; font-size: 20px;">
+                                            </li>
+                                            <li class="list-group-item">
+                                                Member:
+                                                <p id="s4"></p>
+                                            </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="panel panel-default" id="taskList-left">
+                                        <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll" style="height: 350px;">
+
+                                            <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                                <span class="glyphicon glyphicon-user" aria-hidden="true" style=" font-size: 20px;"></span> Add Memebrs
+                                            </div>
+                                            <div style="padding: 15px;" >
+                                                <div class="input-group ">
+
+                                                    <input class="form-control" type="text" id="search_member_task" name="search_member_section"  placeholder="search members" style="font-family: thaisansneue; font-size: 20px;" >
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" id="buttonClick" type="submit">
+                                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                                </button>
+                                            </span>
+
+                                                </div>
+                                                <br>
+                                                <center>
+                                                    <div class="list-group col-sm-11" id="Member_resultsTask">
+
+
+                                                    </div>
+
+
+                                                </center>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+
+                            <button type="submit" class="btn btn-primary">
+                                Add
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Cancel
+                            </button>
+                        </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+            <!-- -->
+
+            <div class="panel panel-default" style="padding: 10px;" a>
+                <div class="row">
+                    <div class="col-sm-6">
+
+                        <!-- Button trigger modal -->
+                        <button class="btn btn-primary btn-md" data-toggle="collapse" data-parent="#accordion" href="#newProject" >
+                            <span class="glyphicon glyphicon-plus"  data-toggle="collapse" data-target="#newProject" aria-hidden="true"></span> New Project
+                        </button>
+                        <!-- Button trigger modal -->
+                        <a href="/delete_project/">
+                            <button class="btn btn-danger btn-md" data-target="" align="right">
+                                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> Delete Project
+                            </button>
+                        </a>
+
+                    </div>
+                    <div class="col-sm-2" >
+                    </div>
+                    <div class="col-sm-4" >
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder="search project" id="search" name="search" data-provide="typeahead">
+
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" id="buttonClick" type="button">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                        </div>
+                        <div class="list-group col-sm-11" id="results"style="position: absolute;z-index: 5;"></div>
+
+
+                    </div>
+                </div>
+                <br>
+
+
+
+                <div id="newProject" class="panel-collaps collapse" align="left">
+
+
+                    <div class="panel-body" >
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <ul class="list-group" id="taskList-left">
+
+                                    <form action="/addProject/" method="post" style="font-family: thaisansneue; font-size: 25px;" >
+                                        {% csrf_token %}
+
+                                        <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                            <span class="glyphicon glyphicon-file" aria-hidden="true" style=" font-size: 20px;"></span> Project Information
+                                        </div>
+                                        <li class="list-group-item"  >
+                                            Project name:
+                                            <input type="text" class="form-control" placeholder="project name" name="txt_projectname" required style="font-family: thaisansneue; font-size: 20px;">
+                                        </li>
+                                        <li class="list-group-item">
+                                            Description:
+                                            <input type="text" class="form-control" placeholder="Description name" name="txt_desc" required style="font-family: thaisansneue; font-size: 20px;">
+                                        </li>
+                                        <li class="list-group-item">
+                                            Start date:
+                                            <input type="date" id="SectionStartdatepicker" placeholder="ex. 2015-01-10" class="form-control"  name="start_date" required style="font-family: thaisansneue; font-size: 20px;">
+                                        </li>
+                                        <li class="list-group-item">
+                                            Due date:
+                                            <input type="date" id="SectionStartdatepicker" placeholder="ex. 2015-01-10" class="form-control"  name="end_date" required style="font-family: thaisansneue; font-size: 20px;">
+                                        </li>
+                                        <li class="list-group-item">
+                                            Member:
+                                            <p></p>
+                                        </li>
+
+
+                                        <br>
+
+
+                                </ul>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="panel panel-default" id="taskList-left">
+                                    <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll" style="height: 350px;">
+
+                                        <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                            <span class="glyphicon glyphicon-user" aria-hidden="true" style=" font-size: 20px;"></span> Add Memebrs
+                                        </div>
+                                        <div style="padding: 15px;" >
+                                            <div class="input-group ">
+
+                                                <input class="form-control" type="text" id="search_member" name="search_member"  placeholder="search members" style="font-family: thaisansneue; font-size: 20px;" >
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" id="buttonClick" type="submit">
+                                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                                </button>
+                                            </span>
+
+                                            </div>
+                                            <br>
+                                            <center>
+                                                <div class="list-group col-sm-11" id="Member_results">
+
+
+                                                </div>
+
+
+                                            </center>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="font-family: thaisansneue; font-size: 20px;">
+                            Add
+                        </button>
+                        <a href="/project/{{ USERNAME }}">
+                            <!-- Button trigger modal -->
+                            <button class="btn btn-default btn-md" data-toggle="" data-target="#myModal2" align="right" style="font-family: thaisansneue; font-size: 20px;">
+                                Back
+                            </button>
+                        </a>
+
+                        </form>
+
+                    </div>
+                </div>
+
+
+                <!-- -->
+
+            </div>
+
+
+
+            <div class="alert alert-info" role="alert">
+                Please select the project to see the detail
+            </div>
+            <br>
+
+            <div class="row" id="allProject">
+
+            {% for   selectProject in  SELECT_PROJECT %}
+                {% for eachProjectINDB in PROJECTALL %}
+                    {% if  selectProject.project_id == eachProjectINDB.id %}
+
+                        <div class="col-md-4" align="center" style="margin-bottom: 30px;">
+
+                        <div class="thumbnail news-content" style="margin-top: -18px;">
+
+                        <div class="caption" style="margin-top: -10px;">
+                            <a href="/projectDetail/{{ eachProjectINDB.id }}"><h3>{{eachProjectINDB.project_name}}</h3></a>
+
+                            <div class="panel panel-default" style=" margin-top: 10px;" >
+
+                                <div class="progress" style="width: 90%; margin-left: -5px; margin-top: 20px;">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                        0%
+                                    </div>
+                                </div>
+
+                                <div class="panel-body" style="margin-top: -20px;" >
+                                    <div class="col-xs-12" style=" margin-left: 10px;">
+                                        <div class="row" s align="center">
+                                            <div id="bigProgress" >
+                                                <div class="col-xs-1"  id="eachProgress" >
+                                                    <div id="section-little" style="margin-left: -25px; font-size: 18px;">
+                                                        Req.
+                                                    </div>
+                                                    <div class="wrapper"> <div class="ribbon-wrapper-green"><div class="ribbon-green2"> 0%</div></div></div>
+
+                                                    <div class="progress">
+                                                        <div class="progress-bar progress-bar-success" style="width: 0%">
+                                                            <span class="sr-only">0%</span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div id="bigProgress" >
+                                                <div class="col-xs-1"    id="eachProgress">
+                                                    <div id="section-little" style="margin-left: -25px; font-size: 18px;">
+                                                        Des.
+                                                    </div>
+                                                    <div class="wrapper"> <div class="ribbon-wrapper-green"><div class="ribbon-green2"> 0%</div></div></div>
+
+                                                    <div class="progress">
+
+                                                        <div class="progress-bar progress-bar-danger" style="width: 0%">
+                                                            <span class="sr-only">0%% Complete (success)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div id="bigProgress" >
+                                                <div class="col-xs-1"    id="eachProgress">
+                                                    <div id="section-little" style="margin-left: -25px; font-size: 18px;">
+                                                        Imp.
+                                                    </div>
+                                                    <div class="wrapper"> <div class="ribbon-wrapper-green"><div class="ribbon-green2"> 0%</div></div></div>
+
+                                                    <div class="progress">
+
+                                                        <div class="progress-bar progress-bar-warning" style="width: 0%">
+                                                            <span class="sr-only">0%% Complete (success)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="bigProgress" >
+                                                <div class="col-xs-1"    id="eachProgress">
+                                                    <div id="section-little" style="margin-left: -25px; font-size: 18px;">
+                                                        Ver.
+                                                    </div>
+                                                    <div class="wrapper"> <div class="ribbon-wrapper-green"><div class="ribbon-green2"> 0%</div></div></div>
+
+                                                    <div class="progress">
+
+                                                        <div class="progress-bar" style="width: 0%">
+                                                            <span class="sr-only">0%% Complete (success)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="bigProgress" >
+                                                <div class="col-xs-1"    id="eachProgress">
+                                                    <div id="section-little" style="margin-left: -25px; font-size: 18px; " >
+                                                        Mai.
+                                                    </div>
+                                                    <div class="wrapper"> <div class="ribbon-wrapper-green"><div class="ribbon-green2"> 0%</div></div></div>
+                                                    <div class="progress">
+
+                                                        <div class="progress-bar progress-bar-info" style="width: 0%">
+                                                            <span class="sr-only">0%% Complete (success)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <div class="bs-example" style="margin-top: -15px;">
+                                <div class="btn-group btn-group-justified" style="font-size: 28px; " >
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default">
+                                            <span class="label label-primary">start</span> {{ eachProjectINDB.start_date }}
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default">
+                                            <span class="label label-danger">end</span> {{ eachProjectINDB.end_date }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="panel panel-default" style="margin: 12px;">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"><a data-toggle="collapse" id="projectMember" data-parent="#accordion" href="#{{eachProjectINDB.id}}p"> Project Members </a></h4>
+                            </div>
+                            <div id="{{eachProjectINDB.id}}p" class="panel-collapse collapse">
+                                <div align="left">
+                                    <ul class="list-group">
+
+                                        {% for i in eachProjectINDB.user.all %}
+                                            <li class="list-group-item" class="list-group-item disabled">
+                                                <div class="row"  >
+                                                    <div class="col-xs-8" id="taskList-left">
+                                                        {{ i.username }}
+                                                    </div>
+
+                                                    <div class="col-xs-4" align="center" id="taskList-right">
+                                                        {% for group in i.groups.all %}
+                                                            {% if group.name == "Project Manager" and i.id == USERID%}
+                                                                <span class="label label-danger" id="userRole" >{{ group.name }}</span>
+                                                            {% endif %}
+                                                            {% if group.name == "Team Member" and i.id != USERID %}
+                                                                <span class="label label-default" id="userRole" >{{ group.name }}</span>
+                                                            {% endif %}
+                                                            <br>
+                                                        {% endfor %}
+
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+
+
+
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                            <div class="panel-heading">
+                                <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#{{ eachProjectINDB.id }}Section"> Sections </a></h4>
+                            </div>
+
+                            <div id="{{ eachProjectINDB.id }}Section" class="panel-collapse collapse">
+
+                                <ul class="list-group" >
+                                    {% for section in eachProjectINDB.sections_set.all %}
+                                        <li class="list-group-item">
+
+                                            <h4><a data-toggle="collapse" data-parent="#accordion" href="#{{ section.id }}s"> {{ section.sections_name }} </a></h4>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                                    0%
+                                                </div>
+                                            </div>
+
+                                            <div class="bs-example">
+                                                <div class="btn-group btn-group-justified" style="font-size: 28px; ">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default">
+                                                            <span class="label label-primary">start</span> {{ section.start_date }}
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default">
+                                                            <span class="label label-danger">end</span> {{ section.end_date }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                        </li>
+
+
+
+                                        <div id="{{ section.id }}s" class="panel-collapse collapse">
+                                            <ul class="list-group" >
+                                                {% for task in section.tasks_set.all %}
+                                                    <li class="list-group-item" data-toggle="collapse" data-target="#{{ task.id }}ttt">
+                                                        <div class="row"  >
+                                                            <div class="col-xs-8" id="taskList-left">
+                                                                {{ task.tasks_name }}
+                                                            </div>
+
+                                                            <div class="col-xs-4" align="center" id="taskList-right">
+                                                                <span class="label label-primary">Done</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+
+                                                    <div id="{{ task.id }}ttt" class="panel-collapse collapse" align="left">
+                                                        <ul class="list-group" id="taskList-left">
+
+                                                            <li class="list-group-item" style="background: #F4F4F4;">
+                                                                Member :
+                                                                {% for user in task.user.all %}
+                                                                    <a href="#">{{ user.username }}</a>,
+                                                                {% endfor %}
+
+                                                            </li>
+                                                            <li class="list-group-item" style="background: #F4F4F4;">
+                                                                Start date : {{ task.start_date }}
+                                                            </li>
+                                                            <li class="list-group-item" style="background: #F4F4F4;">
+                                                                Due date : {{ task.end_date }}
+                                                            </li>
+
+                                                        </ul>
+                                                    </div>
+
+                                                {% endfor %}
+
+
+                                            </ul>
+                                        </div>
+                                    {% endfor %}
+
+
+
+                                </ul>
+
+                            </div>
+                            <div class="panel-heading">
+                                <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapse3"> Tasks </a></h4>
+                            </div>
+                            <div id="collapse3" class="panel-collapse collapse" align="left" >
+                                <ul class="list-group"  >
+                                    {% for section in eachProjectINDB.sections_set.all %}
+                                        {% for task in section.tasks_set.all %}
+                                            <!---->
+                                            <li class="list-group-item">
+                                                <div class="row">
+                                                    <div class="col-xs-8" id="taskList-left">
+                                                        <h4><a data-toggle="collapse" data-parent="#accordion" href="#{{ task.id }}2"> {{ task.tasks_name }}</a></h4>
+                                                    </div>
+
+                                                    <div class="col-xs-4" align="center" id="taskList-right">
+                                                        <span class="label label-primary">Done</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <div id="{{ task.id }}2" class="panel-collapse collapse" >
+                                                <ul class="list-group" id="taskList-left">
+
+                                                    <li class="list-group-item" style="background: #F4F4F4;">
+                                                        Member :
+                                                        {% for user in task.user.all %}
+                                                            <a href="#">{{ user.username }}</a>,
+                                                        {% endfor %}
+
+                                                    </li>
+                                                    <li class="list-group-item" style="background: #F4F4F4;">
+                                                        Start date : {{ task.start_date }}
+                                                    </li>
+                                                    <li class="list-group-item" style="background: #F4F4F4;">
+                                                        Due date : {{ task.end_date }}
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+
+                                </ul>
+                            </div>
+
+
+
+
+
+                            <div class="panel-heading">
+                                <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#"> Export report </a></h4>
+                            </div>
+                        </div>
+
+                        </div>
+
+
+
+                        </div>
+
+                    {% endif %}
+
+                {% endfor %}
+            {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+    </div>
+
+{%endblock%}

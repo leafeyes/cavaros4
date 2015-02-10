@@ -1,0 +1,36 @@
+{% extends "front/master.html" %}
+
+{% block content %}
+		<!-- CONTENT -->
+		<div class="container white" id="main-content">
+			<div id="content-left">
+				<div style="margin-left: 30px; margin-right:30px;">
+					<h1>PROJECT NAME</h1>
+					<h3>Project Management Scheduling and File Version Control</h3>
+					<hr>
+				</div>
+
+			</div>
+
+			<center>
+				<div id="login-box-main">
+                    {{ ERROR }}
+                    <form action="/login/" method="post"  >
+                        {% csrf_token %}
+
+                        <input type="text" class="form-control" placeholder="Username" name="txt_username">
+                        <br>
+                        <input type="password" class="form-control" placeholder="password" name="txt_password">
+                        <br>
+                        <input type="submit" value = "Login" class="btn btn-default" />
+                        <br><br>
+                        <a href="#"> Sign up</a> | <a href="#">Forget password</a>
+                    </form>
+
+				</div>
+			</center>
+
+		</div>
+
+
+{% endblock %}

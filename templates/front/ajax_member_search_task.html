@@ -1,0 +1,36 @@
+{% for member in members %}
+    <div class="btn-group" data-toggle="buttons" id="btnMemberSelect4" style="margin-bottom: 5px;">
+
+        <label class="btn btn-success " id="checkboxL4"  style="width: 300px; font-family: thaisansneue; font-size: 33px;">
+
+            <input type="checkbox" class="checkboxC4" id="checkboxC4" autocomplete="off" value="{{ member.username }}">
+            {{ member.username }}
+        </label>
+
+    </div>
+
+{% endfor %}
+<script>
+
+
+    $(document).ready(function() {
+
+
+        $('#btnMemberSelect4 #checkboxC4').change(function() {
+            var name = $('#checkboxC4').val();
+
+            if ($(this).prop('checked')) {
+                var r= $('<input type="button" value="new button"/>');
+                $( "#s4" ).append( ' <input type="text" name= "searchmemberTask"  id= "'+name+'" class="btn btn-default" style="font-family: thaisansneue;  font-size: 35px;" value="'+name +'"/>' );
+            }
+
+            else {
+                var myBtn = document.getElementById(name),
+                        mySpan = document.createElement("span");
+                mySpan.innerHTML = myBtn.innerHTML ;
+                myBtn.parentNode.replaceChild(mySpan, myBtn);
+            }
+        });
+    });
+
+</script>

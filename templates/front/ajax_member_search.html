@@ -1,0 +1,33 @@
+{% for member in members %}
+    <div class="btn-group" data-toggle="buttons" id="btnMemberSelect" style="margin-bottom: 5px;">
+
+        <label class="btn btn-success " id="checkboxL"  style="width: 300px; font-family: thaisansneue; font-size: 23px;">
+
+            <input type="checkbox" class="checkboxC" id="checkboxC" autocomplete="off" value="{{ member.username }}">
+            {{ member.username }}
+        </label>
+
+    </div>
+
+{% endfor %}
+<script>
+
+
+    $(document).ready(function() {
+
+
+        $('#btnMemberSelect #checkboxC').change(function() {
+            var name = $('#checkboxC').val();
+            if ($(this).prop('checked')) {
+                $( "p" ).append( ' <input type="text" name= "searchmember"  id= "'+name+'" class="btn btn-default" style="font-family: thaisansneue;  font-size: 25px;" value="'+name +'"/>' );
+            }
+            else {
+                var myBtn = document.getElementById(name),
+                        mySpan = document.createElement("span");
+                mySpan.innerHTML = myBtn.innerHTML ;
+                myBtn.parentNode.replaceChild(mySpan, myBtn);
+            }
+        });
+    });
+
+</script>

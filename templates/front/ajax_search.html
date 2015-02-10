@@ -1,0 +1,8 @@
+{% for pro in pros %}
+    <a href="/projectDetail/{{ pro.url }}" id="searchResult" class="list-group-item" style="position: relative;">
+        <center>
+            {{ pro.project_name }}
+        </center>
+    </a>
+{% endfor %}
+

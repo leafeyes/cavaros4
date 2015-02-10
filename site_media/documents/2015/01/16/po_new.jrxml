@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="po" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="56b3820c-4c48-47bd-834a-fdbc30a56a32">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select
+  po.name as purchase_order_name,
+  po.date_order as purchase_order_date,
+  pp.name_template as purchase_order_line_name,
+  pol.name as purchase_order_line_notes,
+  pp.default_code as product_code,
+  pol.product_qty as product_order_line_qty,
+  pu.name as product_uom_name,
+  pol.price_unit as purchase_order_line_price_unit,
+  rp.name as address_name,
+  po.partner_ref as partner_ref,
+  coalesce(rp.street,'') || ' ' ||
+	coalesce(rp.street2,'') || ' ' ||
+	coalesce(rp.city,'') || ' ' ||
+	coalesce(rcs.name,'') || ' ' ||
+	coalesce(rp.zip,'') as address_street,
+  rp.phone as address_phone,
+  rp.fax as address_fax,
+  rp.email as address_email,
+  (pol.price_unit*pol.product_qty) as money_total,
+  po.amount_untaxed as pco_amount_untaxed,
+  po.amount_tax as pco_amount_tax,
+  round(po.amount_total,2) as pco_amount_total,
+  --po.amount_text,
+  po.date_order as pco_date_order,
+  po.minimum_planned_date as pco_minimum_planned_date,
+  rp.name as partner_name,
+  po.notes as purchase_note,
+  rc.name as company_name,
+  rc.rml_header1 as company_address,
+  apt.name as payment_term,
+  --po.amount_text,
+  sw.name as warehouse_name,
+  replace(coalesce(rp2.street,'') || ' ' ||
+	coalesce(rp2.street2,'') || ' ' ||
+	coalesce(rp2.city,'') || ' ' ||
+	coalesce(rcs2.name,'') || ' ' ||
+	coalesce(rp2.zip,''), '  ',' ') as company_address_street,
+  'โทร' || ' : ' || rp2.phone || ' ' ||
+  'แฟ็กซ์' || ' : ' ||rp2.fax  as company_address_street2,
+  'อีเมล์' || ' : ' ||rp2.email  || ' ' ||
+  'เว็บไซด์' || ' : ' ||rp2.website as company_address_street3,
+  'เลขประจำตัวผู้เสียภาษี' || ' : ' ||rp2.vat as company_tax_id,
+  (select value || '/web/binary/company_logo?dbname=' || current_database() from ir_config_parameter
+where key = 'web.base.url') as company_logo
+from purchase_order po
+left join purchase_order_line pol on po.id = pol.order_id
+left join product_product pp on pp.id = pol.product_id
+left join product_uom pu on pu.id = pol.product_uom
+left join res_partner rp on rp.id = po.partner_id
+left join stock_warehouse sw on po.warehouse_id = sw.id
+left join res_country_state rcs on rp.state_id = rcs.id
+left join res_company rc on rc.id = po.company_id
+left join ir_property ir on po.partner_id = to_number(SUBSTRING(ir.res_id, 'Y*([0-9]{1,10})'),'9999999999')
+  and ir.name = 'property_payment_term'
+left join account_payment_term apt on po.payment_term_id = apt.id
+left join res_partner rp2 on rp2.id = rc.partner_id
+left join res_country_state rcs2 on rp2.state_id = rcs2.id
+where
+  po.id = 1
+order by
+  po.name,
+  pol.id]]>
+	</queryString>
+	<field name="purchase_order_name" class="java.lang.String"/>
+	<field name="purchase_order_date" class="java.sql.Date"/>
+	<field name="purchase_order_line_name" class="java.lang.String"/>
+	<field name="purchase_order_line_notes" class="java.lang.String"/>
+	<field name="product_code" class="java.lang.String">
+		<fieldDescription><![CDATA[Supplier Product Code]]></fieldDescription>
+	</field>
+	<field name="product_order_line_qty" class="java.math.BigDecimal"/>
+	<field name="product_uom_name" class="java.lang.String"/>
+	<field name="purchase_order_line_price_unit" class="java.math.BigDecimal"/>
+	<field name="address_name" class="java.lang.String"/>
+	<field name="partner_ref" class="java.lang.String">
+		<fieldDescription><![CDATA[Supplier Reference]]></fieldDescription>
+	</field>
+	<field name="address_street" class="java.lang.String"/>
+	<field name="address_phone" class="java.lang.String"/>
+	<field name="address_fax" class="java.lang.String"/>
+	<field name="address_email" class="java.lang.String"/>
+	<field name="money_total" class="java.math.BigDecimal"/>
+	<field name="pco_amount_untaxed" class="java.math.BigDecimal"/>
+	<field name="pco_amount_tax" class="java.math.BigDecimal"/>
+	<field name="pco_amount_total" class="java.math.BigDecimal"/>
+	<field name="pco_date_order" class="java.sql.Date"/>
+	<field name="pco_minimum_planned_date" class="java.sql.Date"/>
+	<field name="partner_name" class="java.lang.String">
+		<fieldDescription><![CDATA[Customer Name]]></fieldDescription>
+	</field>
+	<field name="purchase_note" class="java.lang.String"/>
+	<field name="company_name" class="java.lang.String"/>
+	<field name="company_address" class="java.lang.String"/>
+	<field name="payment_term" class="java.lang.String">
+		<fieldDescription><![CDATA[Payment Terms]]></fieldDescription>
+	</field>
+	<field name="warehouse_name" class="java.lang.String"/>
+	<field name="company_address_street" class="java.lang.String"/>
+	<field name="company_address_street2" class="java.lang.String"/>
+	<field name="company_address_street3" class="java.lang.String"/>
+	<field name="company_tax_id" class="java.lang.String"/>
+	<field name="company_logo" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement x="-1" y="0" width="291" height="32" uuid="36b66503-3738-4c5c-8b42-25a2f8557dc1"/>
+				<textElement>
+					<font fontName="Norasi" size="12" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[บริษัท ไทยแก๊ส คอร์ปอเรชั่น จำกัด]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="32" width="555" height="1" uuid="4aba6a4d-cf7c-459f-8c6c-472f35fe7966"/>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="52" splitType="Stretch">
+			<staticText>
+				<reportElement x="225" y="4" width="112" height="31" uuid="a32693d5-d9b8-4ccc-a9a5-9e8c5c73bc6d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="14" isBold="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ใบสั่งซื้อ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="208" y="19" width="150" height="30" uuid="0d623d4e-c9b0-4cb7-beba-09664b75d97e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="14" isBold="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[PURCHASE ORDER]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="49" width="555" height="1" uuid="505a0ab6-a80a-4501-baa5-7ac6936edd6e"/>
+			</line>
+			<staticText>
+				<reportElement x="406" y="4" width="141" height="18" uuid="14b0fd1b-1d58-4605-a192-92d31eeedbea"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[วันที่/Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="406" y="20" width="141" height="18" uuid="04573c9b-3b01-499c-8397-861bf5317718"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[เลขที่ใบสั่งซื้อ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="406" y="31" width="141" height="18" uuid="8fbb6b07-1be1-4069-b86b-ae67f0dc0ff4"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[PO Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="22" width="141" height="18" uuid="30778a9a-894e-4d2e-9170-06c12ed24667"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[รหัสผู้ขาย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="33" width="141" height="18" uuid="b346abee-c020-47c3-bea4-2071deefaf01"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Code]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="442" y="22" width="120" height="18" uuid="1df117ff-461f-4be6-a1b1-3983bca68270"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Norasi" size="10" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{purchase_order_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="482" y="9" width="100" height="20" uuid="81208429-8dfe-41f3-a860-7c2ce01a4ef6"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="6" y="3" width="219" height="24" uuid="35716d67-706c-4e76-982c-9b55bf073d42"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_tax_id}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="98" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="2" width="337" height="96" uuid="f632bb33-567f-4bba-bd33-bbb66d4cd671"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="337" y="2" width="218" height="96" uuid="f5ebcf4b-ddca-40ed-b6b4-d7c636873509"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="6" y="2" width="63" height="18" uuid="218b95f3-5354-46d9-b3b4-de7c77b0f2de"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[นามผู้ขาย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="13" width="63" height="18" uuid="f96f2691-f887-4a7e-84a0-da8cb95e8a05"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="39" width="63" height="18" uuid="d2e6ce16-90cb-4458-9777-ae821a1d036e"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ที่อยู่]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="51" width="63" height="18" uuid="0728bf60-6e8d-432d-a70a-ea83b05389dc"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="74" width="331" height="18" uuid="4dec2fa8-7274-4743-af77-7d4fd85492f2"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[โทร/Tel					Fax]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="345" y="4" width="141" height="18" uuid="3619da97-651e-4608-b6ec-f0301e889e5d"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[สถานที่ส่งของ/Delivery Address]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="57" y="5" width="90" height="18" uuid="acf8904e-da59-49b3-a56b-1f29fcb6374a"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Norasi" size="10" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{partner_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="54" y="39" width="295" height="36" uuid="a4d9b1fc-f20a-424d-9ba4-475a1a690ac4"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Norasi" size="10" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address_street}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="54" y="74" width="128" height="18" uuid="d5c55238-d7c5-45ef-9009-a4190fbe2557"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Norasi" size="10" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address_phone}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="236" y="75" width="128" height="18" uuid="dc491b59-6c79-4a3d-9a64-5bbd3972b20d"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Norasi" size="10" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address_fax}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="470" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="554" height="61" uuid="62e6a97c-6b30-4126-a75b-489992307138"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="0" width="120" height="34" uuid="4a136914-f93f-44a4-9e86-44a6a1f453d8"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="34" width="120" height="27" uuid="69c68b95-4949-4590-85d0-3dc6413b2478"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="120" y="0" width="95" height="34" uuid="1d9a8797-fd5d-4452-8fe8-162fe20b0b88"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="120" y="34" width="95" height="27" uuid="502b2561-a0a9-4d35-910f-bf4eb0c53600"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="215" y="0" width="112" height="34" uuid="2b85c3ca-caec-4900-823a-cc8e8d3d6059"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="216" y="34" width="111" height="27" uuid="21b4fdbe-7bb3-44ff-97ba-b67d202ecda1"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="327" y="0" width="112" height="34" uuid="bb9401ff-a5d2-4e5e-b4d7-207889294a6a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="439" y="0" width="116" height="34" uuid="0c8cb63e-440c-4afa-9e05-6556dea80240"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="439" y="34" width="116" height="27" uuid="587da423-b3f3-4bd3-b380-fd2c1011c97d"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="5" width="120" height="18" uuid="feab7dea-cb9c-495c-88eb-c9d6a5111f42"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[เลขที่ใบสั่งซื้อ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="16" width="120" height="18" uuid="c00a7e51-16e4-4a34-9ba0-1df2f00d685d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[PR. Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="16" width="95" height="18" uuid="a2447b78-102c-4f5e-afd4-14ca2459aca8"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Term of Payment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="5" width="95" height="18" uuid="d69b41c5-abab-4ff7-b60a-e8dfc9b68d6d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[เงื่อนไขการชำระเงิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="215" y="5" width="112" height="18" uuid="b8d832d4-9ce5-4cd4-bfb5-2b38c86d5085"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[กำหนดการส่งสินค้า/บริการ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="215" y="16" width="113" height="18" uuid="0fd99340-993c-4268-a942-63e916dfdf18"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Delivery/Service]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="326" y="5" width="113" height="18" uuid="9eceed7e-da55-4f4c-84fb-ba0b6e7c24f2"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ชื่อผู้ติดต่อ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="326" y="16" width="113" height="18" uuid="be3c1c74-7f64-4ca8-b6b4-1795d73e89a1"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Contact Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="439" y="16" width="116" height="18" uuid="c2541222-e31f-48bc-b32a-889e0e84f8c4"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="439" y="5" width="116" height="18" uuid="5181fbf0-f2b8-4659-bc58-82e0f15fdedc"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[โครงการ]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="-1" y="66" width="556" height="25" uuid="8cb99253-7e3a-47d5-85f6-e514a9de3470"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="-1" y="66" width="34" height="25" uuid="bf6c63bc-bead-439a-a2aa-657a38f21a20"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="-1" y="66" width="34" height="18" uuid="30c1df9a-b715-47ac-9ab7-a0d4e8d6933f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-1" y="76" width="34" height="27" uuid="32e0f11c-92c7-42fb-96a3-066d70a2d75d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[No]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="-1" y="91" width="555" height="247" uuid="0ef458ea-e4e0-40f5-8cf7-9c2708683052"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="-1" y="91" width="34" height="250" uuid="7014b64b-9156-4cee-8820-e6b47eee9bdb"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="394" y="91" width="80" height="247" uuid="e71a650f-c85d-4e90-bbfe-08700ac41acd"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="474" y="91" width="81" height="247" uuid="722430d3-9296-42df-8b20-83b5dc18a642"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="314" y="91" width="80" height="247" uuid="ba06ed05-09db-478c-89bd-859f783fa3b3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="314" y="66" width="80" height="25" uuid="6f5af223-ba79-4103-bd7f-f87d26dbf26b"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="394" y="66" width="80" height="25" uuid="4748135c-2bfd-4af4-a1b6-28ee0e350861"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="112" y="66" width="95" height="18" uuid="96a8ad29-5053-40a5-baa3-7ad785d489f3"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[รายละเอียด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="112" y="76" width="95" height="18" uuid="c0d71fc4-bd95-4dff-be51-b6abd14f1e35"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="314" y="75" width="80" height="18" uuid="c0a5e7b7-102b-4b50-a01e-b7393ca1313e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="394" y="75" width="80" height="18" uuid="4da54f26-4093-4b3e-8bf1-62db6c482992"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Unit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="474" y="75" width="80" height="18" uuid="01850760-2970-4771-a8f2-d7c81d41fdf3"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="314" y="66" width="80" height="18" uuid="01f3391f-dab1-4843-93d9-990e54593c3c"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[จำนวน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="394" y="66" width="80" height="18" uuid="01c92bc1-1a8b-469b-908e-006c14166f21"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[หน่วยละ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="474" y="66" width="80" height="18" uuid="f947c102-e9d8-4d48-a8d5-d266ec6fab6a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงิน]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="-1" y="338" width="556" height="84" uuid="85d1df4d-93f5-4ef5-81ed-78d447181bbc"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="-1" y="338" width="315" height="25" uuid="0711dcb5-53e2-485c-a477-e86c6d3f1815"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="-1" y="363" width="315" height="59" uuid="fb80cb9c-a477-4589-8b0a-2897a444dc98"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="6" y="367" width="230" height="18" uuid="6ecf84a7-b961-4d5b-a325-59462dff08dd"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[หมายเหตุ: Remark ราคาสินค้ารวมภาษีมูลค่าเพิ่มแล้ว ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="385" width="230" height="18" uuid="f99d8020-6d9b-4311-931e-98c05789cf9d"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[เงื่อนไขชำระเงิน มัดจำ 30% ส่วนที่เหลือ เครดิต 30 วัน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="324" y="342" width="230" height="18" uuid="d3ff64d6-670e-4453-bfc6-27b9d1347d38"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[รวมเงิน / GROSS TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="324" y="357" width="230" height="18" uuid="0c8e6794-e26d-49e4-a9f0-c29763bc8580"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ส่วนลด / DISCOUNT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="324" y="372" width="230" height="18" uuid="250bbc4f-4c24-47e4-bfe4-02eb3dd59d12"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[มูลค่าคงเหลือ / SUB TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="324" y="387" width="230" height="18" uuid="2e76c3f6-828f-41e1-a408-bf9c3a62075a"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ภาษีมูลค่าเพิ่ม / VALUETAX 0%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="324" y="402" width="230" height="18" uuid="ee5ea83d-129b-4ed7-8e69-a7c7ac3313b9"/>
+				<textElement>
+					<font fontName="Norasi" size="10" isBold="false" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ยอดเงินสุทธิ / GRAND TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="178" y="425" width="261" height="20" uuid="be1aedec-506a-4729-9d87-509129e79397"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[*** กรุณาแนบใบสั่งซื้อทุกครั้งที่มีการส่งของวางบิลหรือรับเช็ค ***]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="436" width="501" height="20" uuid="7a5fd00b-d682-4732-aed7-a5d91bceaba5"/>
+				<textElement>
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ทางบริษัทฯ ทมีสิทธิที่จะส่งสินค้าคืนกลับผู้ขาย หรือยกเลิกการสั่งซื้อ ถ้าสินค้าที่ส่งไม่เป็นไปตามที่กำหนดไว้ในใบสั่งซื้อ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="450" width="501" height="20" uuid="a75086ba-b6dc-4789-9fc7-ddb6414ccb34"/>
+				<textElement>
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ใบสั่งซื้อจะมีผลเมื่อมีลายเซนต์อนุมัติจองผู้ที่มีอำนาจนามเท่านั้น]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="82" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="556" height="70" uuid="f9ae78ca-08c1-4904-ba06-72ecf986ad96"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="0" width="147" height="70" uuid="d038255b-ab6d-4996-9fce-9a7044bcfbdc"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="147" y="0" width="135" height="70" uuid="eb441712-82e3-41e7-8ceb-33561a50ca50"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="282" y="0" width="136" height="70" uuid="baef6dd6-f6bf-4e25-a72f-578545b19ad0"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="17" y="0" width="116" height="20" uuid="6758c3fe-beec-4c7b-8613-d46363adf232"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ผู้รับใบสั่งซื้อ/Received By]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="12" width="116" height="20" uuid="fb384e1c-e52b-4fdd-9003-a8411de383db"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ได้รับใบสั่งซื้อแล้ว]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="37" width="116" height="20" uuid="40680ecc-2ec2-438c-bece-5bad3fa00710"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[..............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="16" y="55" width="116" height="20" uuid="70954135-c6c9-405b-b39d-c11bd754fcb6"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[วันที่/Date...............................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="156" y="37" width="116" height="20" uuid="804da298-2dc4-44a4-affc-d3115f608d45"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[..............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="37" width="116" height="20" uuid="8f118f6b-83ff-40c6-a982-d74a930cca98"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[..............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="431" y="37" width="116" height="20" uuid="0f405ff3-3d58-4a79-bade-9edd096d0fc3"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[..............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="156" y="55" width="116" height="20" uuid="190c8b99-dddf-49db-ad11-f35b51ef57b7"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[วันที่/Date...............................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="55" width="116" height="20" uuid="cbdd2a5e-6705-405e-b298-fd99a47bfdb5"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[วันที่/Date...............................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="431" y="55" width="116" height="20" uuid="ea655561-6ac8-46c6-91c9-37b4b7329eef"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[วันที่/Date...............................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="156" y="1" width="116" height="20" uuid="b9645bb0-b1ad-4203-9283-c530908df06e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[เจ้าหน้าที่จัดซื้อ/Purchasing]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="1" width="116" height="20" uuid="4487f6b8-5350-47be-ab24-268259c43cf0"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ผู้ตรวจสอบ/Checked by]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="431" y="1" width="116" height="20" uuid="00b7cff7-9e78-4ff3-ba40-c30aae188410"/>
+				<textElement textAlignment="Center">
+					<font fontName="Norasi" isItalic="true" pdfFontName="/usr/share/fonts/truetype/tlwg/Norasi.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ผู้อนุมัติ/Authorized Signature]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

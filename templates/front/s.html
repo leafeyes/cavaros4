@@ -1,0 +1,1456 @@
+{% extends "front/master.html" %}
+
+{% block content %}
+
+    <style>
+        #btnMemberSelect .btn{
+            background-color: #fff;
+            color: #000;
+            border-color: #ccc;
+            font-family: arial;
+            font-size: 16px;
+        }
+        #btnMemberSelect .btn.active {
+            color: #fff;
+            background-color: #41A317;
+            font-family: arial;
+
+        }
+        #btnMemberSelect .btn span.glyphicon {
+            opacity: 0;
+        }
+        #btnMemberSelect .btn.active span.glyphicon {
+            opacity: 1;
+        }
+
+        #btnMemberSelect2 .btn{
+            background-color: #fff;
+            color: #000;
+            border-color: #ccc;
+            font-family: arial;
+            font-size: 16px;
+        }
+        #btnMemberSelect2 .btn.active {
+            color: #fff;
+            background-color: #41A317;
+            font-family: arial;
+
+        }
+        #btnMemberSelect2 .btn span.glyphicon {
+            opacity: 0;
+        }
+        #btnMemberSelect2 .btn.active span.glyphicon {
+            opacity: 1;
+        }
+
+
+        #btnMemberSelect3 .btn{
+            background-color: #fff;
+            color: #000;
+            border-color: #ccc;
+            font-family: arial;
+            font-size: 16px;
+        }
+        #btnMemberSelect3 .btn.active {
+            color: #fff;
+            background-color: #41A317;
+            font-family: arial;
+
+        }
+        #btnMemberSelect3 .btn span.glyphicon {
+            opacity: 0;
+        }
+        #btnMemberSelect3 .btn.active span.glyphicon {
+            opacity: 1;
+        }
+    </style>
+    <script type="text/javascript">
+        function reply_click(clicked_id)
+        {
+            $("#addMoreMember").attr("action", "/addMember2/" + clicked_id+"/");
+        }
+    </script>
+    <script type="text/javascript">
+        function addSection_click(clicked_id)
+        {
+            $("#addMoreSection").attr("action", "/addSection2/" + clicked_id+"/");
+        }
+    </script>
+    <script type="text/javascript">
+        function addTask_click(clicked_id)
+        {
+
+            $("#addMoreTask").attr("action", "/addTask/" + clicked_id+"/");
+        }
+    </script>
+
+    <script>
+
+        $(document).ready(function(){
+
+
+            $("#search").keyup(function(){
+
+                $.ajax({
+                    url: "/searchProject",
+                    type: "GET",
+                    data:{
+
+                        'search_text':$('#search').val()
+                    },
+                    success:function(result){
+                        $("#results").html(result);
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function(){
+            $("#search_member").keyup(function(){
+
+                $.ajax({
+                    url: "/searchMember",
+                    type: "GET",
+                    data:{
+
+                        'search_text':$('#search_member').val()
+                    },
+                    success:function(result){
+                        $("#Member_results").html(result);
+                    }
+                });
+            });
+
+
+
+        });
+        $(document).ready(function(){
+            $("#search_member2").keyup(function(){
+                $.ajax({
+                    url: "/search_member2",
+                    type: "GET",
+                    data:{
+
+                        'search_text2':$('#search_member2').val()
+                    },
+                    success:function(result2){
+                        $("#Member_results2").html(result2);
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $("#search_member_section").keyup(function(){
+                alert("d");
+                $.ajax({
+                    url: "/search_member_section",
+                    type: "GET",
+                    data:{
+
+                        'search_textSection':$('#search_member_section').val()
+                    },
+                    success:function(result3){
+                        $("#Member_resultsSection").html(result3);
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $("#search_member_task").keyup(function(){
+                $.ajax({
+                    url: "/search_member_task",
+                    type: "GET",
+                    data:{
+
+                        'search_textTask':$('#search_member_task').val()
+                    },
+                    success:function(result4){
+                        $("#Member_resultsTask").html(result4);
+                    }
+                });
+            });
+        });
+
+
+
+
+
+
+
+    </script>
+    <link href="/site_media/css/style.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/site_media/css/search/normalize.css">
+    <link rel="stylesheet" href="/site_media/css/search/stylesheet.css">
+    <!--[if IE 8]><script src="js/es5.js"></script><![endif]-->
+    <script src="/site_media/js/jquery.js"></script>
+    <script src="/site_media/js/index.js"></script>
+    <!-- CONTENT -->
+    <div class="container white" id="main-content">
+
+    <h3 id="thankHead" align="left">
+        <b>
+            <a href="/projectManagerDashboard/">
+                Dashbaord
+            </a>
+        </b> /
+        <b>
+            <a href="/project/{{ USERNAME }}">
+                Project Management
+            </a>
+        </b> / {{ PROJECTS_DETAIL.project_name }}</h3>
+
+    <br>
+    <div class="row">
+    <div class="col-md-9" style="padding: 10px">
+    <div class="panel panel-default" style="margin-top: -10px;">
+    <div class="panel-heading">
+        <div class="row">
+
+            <h4 class="panel-title" id="taskList-left" style="font-size: 26px; margin-left: 15px;"> Senior Project </h4>
+
+        </div>
+    </div>
+    <div class="panel-body">
+    <ul class="nav nav-tabs" role="tablist" id="myTab">
+        <li class="active">
+            <a href="#section" role="tab" data-toggle="tab">Sections</a>
+        </li>
+
+        <li>
+            <a href="#task" role="tab" data-toggle="tab">Tasks</a>
+        </li>
+        <li>
+            <a href="#member" role="tab" data-toggle="tab">Members</a>
+        </li>
+
+    </ul>
+    <br>
+
+    <div class="tab-content">
+    <div class="tab-pane active" id="section">
+    <div class="row">
+        <div class="col-md-7" style="padding: 10px">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="search" >
+					<span class="input-group-btn">
+						<button class="btn btn-default" id="buttonClick" type="button">Go!</button> </span>
+            </div>
+        </div>
+
+        <div class="col-md-5" align="left" style="padding: 10px" >
+            <center>
+
+                <!-- Button trigger modal -->
+                <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addSection" align="right">
+                    + New section
+                </button>
+
+                <!-- Modal -->
+                <<!-- add task modal-->
+                <div class="modal fade" id="addSection" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+
+                            <div class="modal-body" >
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <ul class="list-group" id="taskList-left">
+
+                                            <form id="addMoreTask" action="/addTask/" method="post" style="font-family: thaisansneue; font-size: 25px;" >
+                                                {% csrf_token %}
+
+                                                <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                                    <span class="glyphicon glyphicon-th-list" aria-hidden="true" style=" font-size: 20px;"></span> Task Information
+                                                </div>
+                                                <li class="list-group-item"  >
+                                                    Task name:
+                                                    <input type="text" class="form-control" placeholder="section name" name="txt_taskname" required style="font-family: thaisansneue; font-size: 20px;">
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Description:
+                                                    <input type="text" class="form-control" placeholder="Description name" name="txt_taskdesc" required style="font-family: thaisansneue; font-size: 20px;">
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Start date:
+                                                    <input type="date" id="taskStartdatepicker" placeholder="ex. 2015-01-10" class="form-control"  name="taskstart_date" required style="font-family: thaisansneue; font-size: 20px;">
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Due date:
+                                                    <input type="date" id="taskStartdatepicker" placeholder="ex. 2015-01-10" class="form-control"  name="taskend_date" required style="font-family: thaisansneue; font-size: 20px;">
+                                                </li>
+                                                <li class="list-group-item">
+                                                    Member:
+                                                    <p id="s4"></p>
+                                                </li>
+
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="panel panel-default" id="taskList-left">
+                                            <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll" style="height: 350px;">
+
+                                                <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                                    <span class="glyphicon glyphicon-user" aria-hidden="true" style=" font-size: 20px;"></span> Add Memebrs
+                                                </div>
+                                                <div style="padding: 15px;" >
+                                                    <div class="input-group ">
+
+                                                        <input class="form-control" type="text" id="search_member_task" name="search_member_section"  placeholder="search members" style="font-family: thaisansneue; font-size: 20px;" >
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" id="buttonClick" type="submit">
+                                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                                </button>
+                                            </span>
+
+                                                    </div>
+                                                    <br>
+                                                    <center>
+                                                        <div class="list-group col-sm-11" id="Member_resultsTask">
+
+
+                                                        </div>
+
+
+                                                    </center>
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+
+                                <button type="submit" class="btn btn-primary">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- -->
+                <!-- -->
+
+                <button class="btn btn-danger" type="button" align="right">
+                    - Delete section
+                </button>
+            </center>
+        </div>
+    </div>
+    <br>
+    <ul class="list-group" >
+        {% for section in PROJECTS_DETAIL.sections_set.all %}
+
+            <li class="list-group-item" style="background: #F4F4F4; ">
+
+                <div class="row">
+                    <div class="col-xs-6" >
+
+                        <h4><a id="toggle" class="toggleArrow" data-toggle="collapse" data-parent="#accordion" href="#section1" style="font-size: 10px; color: #C0A16Bc"> ▼▲ </a>&nbsp;&nbsp; Section : <a data-toggle="collapse" data-parent="#accordion" href="#section1"> {{ section.sections_name }} </a> &nbsp;&nbsp;&nbsp;&nbsp; <a data-toggle="collapse" data-parent="#accordion" href="#task1" style="font-size: 14px; color: #6e6e6e;" id="edit" onclick="document.getElementById('edit').innerHTML = '[ save ]'">[ edit ]</a></h4>
+
+                    </div>
+                    <div class="col-xs-6" >
+                        <a href=""><h4 align="right" > 80% </h4></a>
+                    </div>
+                </div>
+
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 80%;" align="center">
+
+                    </div>
+                </div>
+
+            </li>
+            <li class="list-group-item" id="taskList-left" style="background: #;">
+                <div class="row">
+                    <div class="col-md-12">
+                        Member:
+                        {% for task in section.tasks_set.all %}
+                            {% for user in task.user.all %}
+                                {% for user in task.user.all %}
+                                    <a href="#">{{ user.username }}</a>,
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                </div>
+                <div class="row" align="left">
+
+                    <div class="col-md-4" >
+                        Due date: {{ section.end_date }}
+
+                    </div>
+                    <div class="col-md-8" >
+                        <div class="row">
+                            <div class="col-xs-4" align="left" style="width: 160px;">
+                                Remaining time:
+                            </div>
+                            <div class="col-xs-6" align="left">
+                                <div id="countbox" style="font-size: 20px; margin-top: 2px;"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </li>
+            <div id="section1" class="panel-collapse collapse">
+                <ul class="list-group" >
+                    <li class="list-group-item" style="background: #F4F4F4; " id="taskList-left">
+                        Description
+                    </li>
+
+                    <li class="list-group-item" id="taskList-left">
+                        {{ section.description  }}                    </li>
+                    <li class="list-group-item" style="background: #fff;">
+                        <div class="row" id="taskList-left" align="center">
+                            <div class="col-md-3"align="center" >
+
+                                <div class="panel panel-default" style="background-color: #F0F0F0">
+                                    Create date
+                                </div>
+                                <div class="panel panel-default" style="margin-top: -25px;">
+                                    {{ section.create_date }}
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3"align="center"  style="margin-left: -25px;">
+
+                                <div class="panel panel-default"  style="background-color: #F0F0F0">
+                                    Start date
+                                </div>
+                                <div class="panel panel-default" style="margin-top: -25px;">
+                                    {{ section.start_date }}
+
+                                </div>
+
+                            </div>
+                            <div class="col-md-3"align="center"  style="margin-left: -25px;">
+
+                                <div class="panel panel-default"  style="background-color: #F0F0F0">
+                                    End date
+                                </div>
+                                <div class="panel panel-default" style="margin-top: -25px;">
+                                    {{ section.start_date }}
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </li>
+
+                    <li class="list-group-item" data-toggle="collapse" data-target="#alltaskInfo1" style="margin-top: 0px; background-color: #f4f4f4">
+                        <div class="row"  >
+                            <div class="col-xs-6" id="taskList-left">
+                                Task
+                            </div>
+                            <div class="col-xs-2" id="taskList-left"  >
+                                Due date
+                            </div>
+
+
+                            <div class="col-xs-2" align="center" id="taskList-left">
+                                Status
+                            </div>
+                        </div>
+                    </li>
+                    {% for task in section.tasks_set.all %}
+                        <li class="list-group-item" data-toggle="collapse" data-target="#{{ task.tasks_name }}{{ task.id }}t" style="margin-top: 0px;">
+                            <div class="row"  >
+                                <div class="col-xs-6" id="taskList-left">
+                                    {{ task.tasks_name }}
+
+                                </div>
+                                <div class="col-xs-2" id="taskList-left"  style="font-size: 20px;">
+                                    {{ task.end_date }}
+                                </div>
+
+                                <div class="col-xs-2" align="center" id="taskList-right">
+                                    <span class="label label-primary">Done</span>
+                                </div>
+                            </div>
+                        </li>
+                        <div id="{{ task.tasks_name }}{{ task.id }}t" class="panel-collapse collapse" align="left">
+                            <ul class="list-group" id="taskList-left">
+                                <li class="list-group-item" style="background: #F4F4F4;">
+                                    Member :
+                                    {% for user in task.user.all %}
+                                        {% for user in task.user.all %}
+                                            <a href="#">{{ user.username }}</a>,
+                                        {% endfor %}
+                                    {% endfor %}
+                                </li>
+
+                            </ul>
+                        </div>
+                    {% endfor %}
+
+
+                </ul>
+            </div>
+        {% endfor %}
+
+    </ul>
+
+    </div>
+
+    <div class="tab-pane" id="task">
+    <div class="row">
+        <div class="col-md-5" style="padding: 10px">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="search" >
+												<span class="input-group-btn">
+													<button class="btn btn-default" id="buttonClick" type="button">
+                                                        Go!
+                                                    </button> </span>
+            </div>
+        </div>
+        <div class="col-md-2" style="padding: 10px">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="search" >
+												<span class="input-group-btn">
+													<button class="btn btn-default" id="buttonClick" type="button">
+                                                        Go!
+                                                    </button> </span>
+            </div>
+        </div>
+        <div class="col-md-5" align="left" style="padding: 10px" >
+            <center>
+
+                <!-- Button trigger modal -->
+                <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#myModal" align="right">
+                    + New task
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">Add new task</h4>
+                            </div>
+                            <div class="modal-body" >
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <ul class="list-group" id="taskList-left">
+
+                                            <li class="list-group-item"  >
+                                                Task name:
+                                                <input type="text" class="form-control">
+                                            </li>
+                                            <li class="list-group-item">
+                                                Description:
+                                                <input type="text" class="form-control">
+                                            </li>
+
+                                        </ul>
+                                        <div class="panel panel-default" style="padding: 20px;">
+                                            <div class="row">
+
+                                                <div class="col-sm-6">
+                                                    Start date:
+                                                    <input type="text" id="TaskStartdatepicker" class="form-control">
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    Due date:
+                                                    <input type="text" id="TaskEnddatepicker" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="panel panel-default" id="taskList-left">
+                                            <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll" style="height: 290px;">
+
+                                                <div class="panel-heading">
+                                                    Existing Tasks
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div style="margin-top: -5px; border-bottom: 1px solid #ccc; padding: 5px;">
+                                                        Document
+                                                    </div>
+                                                    <div style="margin-top: -5px; border-bottom: 1px solid #ccc; padding: 5px;">
+                                                        Document
+                                                    </div>
+                                                    <div style="margin-top: -5px; border-bottom: 1px solid #ccc; padding: 5px;">
+                                                        Document
+                                                    </div>
+                                                    <div style="margin-top: -5px; border-bottom: 1px solid #ccc; padding: 5px;">
+                                                        Document
+                                                    </div>
+                                                    <div style="margin-top: -5px; border-bottom: 1px solid #ccc; padding: 5px;">
+                                                        Document
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="list-group" id="taskList-left">
+
+                                    <ul class="list-group" id="taskList-left">
+
+                                        <li class="list-group-item">
+                                            <div class="alert alert-warning" role="alert">
+                                                Please select member from member list
+                                            </div>
+                                            <ul class="list-group" >
+                                                <li class="list-group-item " style="background-color: #F4F4F4; font-weight: bold;">
+                                                    Member List
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row"  >
+                                                        <div class="col-xs-8" id="taskList-left">
+                                                            Jenneth
+                                                        </div>
+
+                                                        <div class="col-xs-4" align="right" >
+                                                            <button type="button" class="btn btn-primary" style="font-size: 20px; letter-spacing: 0px; font-family: "arial"">
+                                                            add
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row"  >
+                                                        <div class="col-xs-8" id="taskList-left">
+                                                            Sirachat
+                                                        </div>
+
+                                                        <div class="col-xs-4" align="right" >
+                                                            <button type="button" class="btn btn-primary" style="font-size: 20px; letter-spacing: 0px; font-family: "arial"">
+                                                            add
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row"  >
+                                                        <div class="col-xs-8" id="taskList-left">
+                                                            Jannarong
+                                                        </div>
+
+                                                        <div class="col-xs-4" align="right" >
+                                                            <button type="button" class="btn btn-primary" style="font-size: 20px; letter-spacing: 0px; font-family: "arial"">
+                                                            add
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+
+                                        </li>
+
+                                    </ul>
+
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+
+                                <button type="button" class="btn btn-primary">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- -->
+
+                <button class="btn btn-danger" type="button" align="right">
+                    - Delete task
+                </button>
+            </center>
+        </div>
+    </div>
+    <br>
+    <ul class="list-group" >
+    {% for section in PROJECTS_DETAIL.sections_set.all %}
+        {% for task in section.tasks_set.all %}
+            <li class="list-group-item" style="background: #F4F4F4; ">
+
+                <div class="row">
+                    <div class="col-xs-6" >
+
+                        <h4><a id="toggle" class="toggleArrow" data-toggle="collapse" data-parent="#accordion" href="#{{ task.id }}{{ task.name }}tall" style="font-size: 10px; color: #C0A16Bc"> ▼▲ </a>&nbsp;&nbsp; Task : <a data-toggle="collapse" data-parent="#accordion" href="#{{ task.id }}{{ task.name }}tall"> {{ task.tasks_name }} </a> &nbsp;&nbsp;&nbsp;&nbsp; <a data-toggle="collapse" data-parent="#accordion" href="#task1" style="font-size: 14px; color: #6e6e6e;" id="edit" onclick="document.getElementById('edit').innerHTML = '[ save ]'">[ edit ]</a></h4>
+
+                    </div>
+                    <div class="col-xs-6" >
+                        <a href=""><h4 align="right" > 80% </h4></a>
+                    </div>
+                </div>
+
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 80%;" align="center">
+
+                    </div>
+                </div>
+
+            </li>
+            <li class="list-group-item" id="taskList-left" style="background: #;">
+                <div class="row">
+                    <div class="col-md-12">
+                        Member:
+                        {% for user in task.user.all %}
+                            <a href="#">{{ user.username }}</a>,
+                        {% endfor %}
+                    </div>
+
+                </div>
+                <div class="row" align="left">
+
+                    <div class="col-md-4" >
+                        Due date: {{ task.end_date }}
+
+                    </div>
+                    <div class="col-md-8" >
+                        <div class="row">
+                            <div class="col-xs-4" align="left" style="width: 160px;">
+                                Remaining time:
+                            </div>
+                            <div class="col-xs-6" align="left">
+                                <div id="countbox1" style="font-size: 20px; margin-top: 2px;"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </li>
+            <div id="{{ task.id }}{{ task.name }}tall" class="panel-collapse  collapse" style="margin-top: -5px;">
+            <ul class="list-group" id="taskList-left">
+            <li class="list-group-item" style="background: #F4F4F4; " id="taskList-left">
+                Description
+            </li>
+
+            <li class="list-group-item" id="taskList-left">
+                {{ task.description }}
+            </li>
+            <li class="list-group-item" style="background: #fff;">
+                <div class="row" id="taskList-left" align="center">
+                    <div class="col-md-3"align="center" >
+
+                        <div class="panel panel-default" style="background-color: #F0F0F0">
+                            Create date
+                        </div>
+                        <div class="panel panel-default" style="margin-top: -25px;">
+                            {{ task.create_date }}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3"align="center"  style="margin-left: -25px;">
+
+                        <div class="panel panel-default"  style="background-color: #F0F0F0">
+                            Start date
+                        </div>
+                        <div class="panel panel-default" style="margin-top: -25px;">
+                            {{ task.start_date }}
+                        </div>
+
+                    </div>
+                    <div class="col-md-3"align="center"  style="margin-left: -25px;">
+
+                        <div class="panel panel-default"  style="background-color: #F0F0F0">
+                            End date
+                        </div>
+                        <div class="panel panel-default" style="margin-top: -25px;">
+                            {{ task.create_date }}
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </li>
+            <li class="list-group-item" style="background: #; ">
+                Section: {{ section.sections_name }}
+            </li>
+            <li class="list-group-item" style="background: #F4F4F4;   ">
+                Task check list
+            </li>
+            <li class="list-group-item" style="background: #; ">
+
+                <div class="panel panel-default" align="left" style="margin-top: 10px; padding: 10px;">
+                    <div class="row" style="background-color: #;  border-radius: 6px;" align="left">
+                        <div class="col-md-10" style="background-color: ; margin-top: 0px;" align="left">
+                            <input type="checkbox" class="checkbox large" >
+
+                            1. Register at BitBucket.org (http://www.bitbucket.org). Please using your MU email ( @student.mahidol.ac.th or @student.mahidol.edu ) in registration because you will get Unlimited Plan automatically (Unlimited members per team).
+                        </div>
+                        <div class="col-md-2" align="center" style="background-color: #; margin-top:10px; font-size: 20px;">
+
+                            <div class="panel panel-default"  style="background-color: #F0F0F0">
+                                End date
+                            </div>
+                            <div class="panel panel-default" style="margin-top: -25px;">
+                                01/01/14
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+                    Task files :
+
+                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                        diagram.docx
+                    </button>
+                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                        diagram.docx
+                    </button>
+                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                        usecaseNarrative.docx
+                    </button>
+                </div>
+
+                <div class="panel panel-default" align="left" style="margin-top: 10px; padding: 10px;">
+                    <div class="row" style="background-color: #;  border-radius: 6px;" align="left">
+                        <div class="col-md-10" style="background-color: ; margin-top: 0px;" align="left">
+                            <input type="checkbox" class="checkbox large" >
+
+                            2. Connect your Aptana IDE with your BitBucket account by following this tutorial: http://nealbuerger.com/2013/11/aptana-eclipse-set-up-git-repository-github-bitbucket/
+                        </div>
+                        <div class="col-md-2" align="center" style="background-color: #; margin-top:10px; font-size: 20px;">
+
+                            <div class="panel panel-default"  style="background-color: #F0F0F0">
+                                End date
+                            </div>
+                            <div class="panel panel-default" style="margin-top: -25px;">
+                                01/01/14
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+                    Task files :
+
+                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                        diagram.docx
+                    </button>
+                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                        diagram.docx
+                    </button>
+                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                        usecaseNarrative.docx
+                    </button>
+                </div>
+
+            </li>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal9" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                            </button>
+                            <h2 class="modal-title" id="myModalLabel">usecaseNarrative.docx</h2>
+                        </div>
+                        <div class="modal-body" >
+                            <div class="row">
+                                <div class="col-md-6">
+
+                                    <div class="panel panel-default" align="center" id="taskList-left">
+                                        <div class="panel-heading">
+                                            Current version
+                                        </div>
+
+                                        <div class="panel-body	" align="center">
+
+                                            <img src="site_media/img/file.jpg" width="200" class="img-responsive">
+
+                                            usecaseNarrative.docx
+                                            <br>
+                                            <small> version 1.0  | date modified: 01/01/14 15:32:10</small>
+
+                                        </div>
+
+                                        <div class="panel-footer">
+                                            <button type="button" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-save"></span>
+                                            </button>
+
+                                            <button type="button" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-link"></span>
+                                            </button>
+
+                                            <button type="button" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-pencil"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                    <div class="panel panel-default" style="background-color: #f4f4f4;" >
+
+                                        <ul class="list-group" id="taskList-left">
+
+                                            <li class="list-group-item" style="background: #fff;">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        Sirachat
+                                                    </div>
+                                                    <div class="col-xs-9">
+                                                        I want the soap services and also the exsample of how it work.
+
+                                                        PS. please add any service that you may want to call inside the main method.
+                                                    </div>
+                                                </div>
+                                                <small>01/01/14 15:32:10</small>
+                                            </li>
+                                            <li class="list-group-item" style="background: #fff;">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        Sirachat
+                                                    </div>
+                                                    <div class="col-xs-9">
+                                                        I want the soap services and also the exsample of how it work.
+
+                                                        PS. please add any service that you may want to call inside the main method.
+                                                    </div>
+                                                </div>
+                                                <small>01/01/14 15:32:10</small>
+                                            </li>
+                                            <li class="list-group-item" style="background: #fff;">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        Sirachat
+                                                    </div>
+                                                    <div class="col-xs-9">
+                                                        I want the soap services and also the exsample of how it work.
+
+                                                        PS. please add any service that you may want to call inside the main method.
+                                                    </div>
+                                                </div>
+                                                <small>01/01/14 15:32:10</small>
+                                            </li>
+
+                                            <li class="list-group-item" style="background: #f4f4f4;">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <input class="form-control" type="text"  >
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button class="btn btn-default" id="buttonClick" type="button">
+                                                            comment
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </li>
+
+                                        </ul>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="panel panel-default" id="taskList-left">
+                                        <div class="panel-heading">
+                                            Historical version
+                                        </div>
+                                        <div class="list-group">
+
+
+                                            <a href="#downloadToggle"  data-toggle="collapse" data-parent="#accordion"  class="list-group-item">
+                                                <div class="row">
+                                                    <div class="col-xs-10">
+                                                        usecaseNarrative.docx
+                                                        <br>
+                                                        <small> version 1.0  | date modified: 01/01/14 15:32:10
+                                                            <br>
+                                                            responsibility: Sirachat</small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </div>
+                                                    <div class="col-xs-2" >
+                                                        <div id="downloadToggle"  align="center" class="panel-collapse collapse">
+                                                            <button type="button" class="btn btn-default btn-sm">
+                                                                <span class="glyphicon glyphicon-save"></span>
+                                                            </button>
+                                                            <br>
+                                                            <button type="button" class="btn btn-default btn-sm">
+                                                                <span class="glyphicon glyphicon-link"></span>
+                                                            </button>
+                                                            <br>
+                                                            <button type="button" class="btn btn-default btn-sm">
+                                                                <span class="glyphicon glyphicon-pencil"></span>
+                                                            </button>
+                                                            <button type="button" class="btn btn-default btn-sm">
+                                                                <span class="glyphicon glyphicon-trash"></span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div> </a>
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </ul>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    </ul>
+
+    </div>
+
+    <div class="tab-pane" id="member">
+    <div class="row">
+        <div class="col-md-7" style="padding: 10px">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="search" >
+												<span class="input-group-btn">
+													<button class="btn btn-default" id="buttonClick" type="button">
+                                                        Go!
+                                                    </button> </span>
+            </div>
+        </div>
+
+        <div class="col-md-5" align="left" style="padding: 10px" >
+            <center>
+                <!-- Button trigger modal -->
+                <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#myModal3" align="right">
+                    + New member
+                </button>
+
+                <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">Add new member</h4>
+                            </div>
+                            <div class="modal-body" >
+
+                                <ul class="list-group" id="taskList-left">
+
+                                    <li class="list-group-item">
+                                        <div class="alert alert-warning" role="alert">
+                                            Please select member from member list
+                                        </div>
+                                        <ul class="list-group" >
+                                            <li class="list-group-item " style="background-color: #F4F4F4; font-weight: bold;">
+                                                Member List
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="row"  >
+                                                    <div class="col-xs-8" id="taskList-left">
+                                                        Jenneth
+                                                    </div>
+
+                                                    <div class="col-xs-4" align="right" >
+                                                        <button type="button" class="btn btn-primary" style="font-size: 20px; letter-spacing: 0px; font-family: "arial"">
+                                                        add
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="row"  >
+                                                    <div class="col-xs-8" id="taskList-left">
+                                                        Sirachat
+                                                    </div>
+
+                                                    <div class="col-xs-4" align="right" >
+                                                        <button type="button" class="btn btn-primary" style="font-size: 20px; letter-spacing: 0px; font-family: "arial"">
+                                                        add
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="row"  >
+                                                    <div class="col-xs-8" id="taskList-left">
+                                                        Jannarong
+                                                    </div>
+
+                                                    <div class="col-xs-4" align="right" >
+                                                        <button type="button" class="btn btn-primary" style="font-size: 20px; letter-spacing: 0px; font-family: "arial"">
+                                                        add
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+
+                                    </li>
+
+                                </ul>
+                                <ul class="list-group" id="taskList-left">
+
+                                    <li class="list-group-item"  >
+                                        Username name:
+                                        <input type="text" class="form-control">
+                                    </li>
+                                    <li class="list-group-item">
+                                        E-mail:
+                                        <input type="text" class="form-control">
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+
+                                <button type="button" class="btn btn-primary">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- -->
+
+                <button class="btn btn-danger" type="button" align="right">
+                    - Delete member
+            </center>
+        </div>
+    </div>
+    <br>
+
+    <ul class="list-group"  style="font-size:20px;">
+    {% for section in PROJECTS_DETAIL.sections_set.all %}
+        {% for task in section.tasks_set.all %}
+            {% for user in task.user.all %}
+
+
+                <li class="list-group-item" style="background: #F4F4F4; ">
+
+                    <div class="row">
+                        <div class="col-xs-6" >
+
+                            <a id="toggle" class="toggleArrow" data-toggle="collapse" data-parent="#accordion" href="#member1" style="font-size: 10px; color: #C0A16Bc"> ▼▲ </a>&nbsp;&nbsp;
+                            Member :
+                            <a data-toggle="collapse" data-parent="#accordion" href="#member1"> {{ user.username }} </a>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a data-toggle="collapse" data-parent="#accordion" href="#member1" style="font-size: 14px; color: #6e6e6e;" id="edit" onclick="document.getElementById('edit').innerHTML = '[ save ]'"></a>
+
+                        </div>
+
+                    </div>
+
+                </li>
+                <li class="list-group-item" id="taskList-left" style="background: #;">
+                    Position:
+                    {% for group in user.groups.all %}
+
+                        {{ group.name}}
+                    {% endfor %}
+                    <br>
+                    <br>
+                </li>
+
+                <div id="member1" class="panel-collapse  collapse" >
+                    <ul class="list-group" id="taskList-left">
+                        <li class="list-group-item" data-toggle="collapse" data-target="#" style="margin-top: 0px; background-color: #f4f4f4">
+                            <div class="row"  >
+                                <div class="col-xs-6" id="taskList-left">
+                                    Task
+                                </div>
+                                <div class="col-xs-2" id="taskList-left"  >
+                                    Due date
+                                </div>
+                                <div class="col-xs-2" id="taskList-left"  >
+                                    Last update
+                                </div>
+
+                                <div class="col-xs-2" align="center" id="taskList-left">
+                                    Status
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item" data-toggle="collapse" data-target="#membertask1" style="margin-top: 0px;">
+                            <div class="row"  >
+                                <div class="col-xs-6" id="taskList-left">
+                                    Use case narrative
+
+                                </div>
+                                <div class="col-xs-2" id="taskList-left"  style="font-size: 20px;">
+                                    02/02/14 18:11:10
+                                </div>
+                                <div class="col-xs-2" id="taskList-left"  style="font-size: 20px;">
+                                    02/02/14 18:11:10
+                                </div>
+
+                                <div class="col-xs-2" align="center" id="taskList-right">
+                                    <span class="label label-primary">Done</span>
+                                </div>
+                            </div>
+                        </li>
+                        <div id="membertask1" class="panel-collapse  collapse" style="margin-top: -5px;">
+                            <ul class="list-group" id="taskList-left">
+                                <li class="list-group-item" style="background: #F4F4F4; " id="taskList-left">
+                                    Description
+                                </li>
+
+                                <li class="list-group-item" id="taskList-left">
+                                    Documentary Film is a broad category of visual expression that is based on the attempt, in one fashion or another, to document reality.
+                                </li>
+
+                                <li class="list-group-item" style="background: #; ">
+                                    Section: Document
+                                </li>
+                                <li class="list-group-item" style="background: #F4F4F4;   ">
+                                    Task check list
+                                </li>
+                                <li class="list-group-item" style="background: #; ">
+
+                                    <div class="panel panel-default" align="left" style="margin-top: 10px; padding: 10px;">
+                                        <div class="row" style="background-color: #;  border-radius: 6px;" align="left">
+                                            <div class="col-md-10" style="background-color: ; margin-top: 0px;" align="left">
+                                                <input type="checkbox" class="checkbox large" >
+
+                                                1. Register at BitBucket.org (http://www.bitbucket.org). Please using your MU email ( @student.mahidol.ac.th or @student.mahidol.edu ) in registration because you will get Unlimited Plan automatically (Unlimited members per team).
+                                            </div>
+                                            <div class="col-md-2" align="center" style="background-color: #; margin-top:10px; font-size: 20px;">
+
+                                                <div class="panel panel-default"  style="background-color: #F0F0F0">
+                                                    Due date
+                                                </div>
+                                                <div class="panel panel-default" style="margin-top: -25px;">
+                                                    01/01/14
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <hr>
+                                        Task files :
+
+                                        <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                                            diagram.docx
+                                        </button>
+                                        <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                                            diagram.docx
+                                        </button>
+                                        <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                                            usecaseNarrative.docx
+                                        </button>
+                                    </div>
+
+                                    <div class="panel panel-default" align="left" style="margin-top: 10px; padding: 10px;">
+                                        <div class="row" style="background-color: #;  border-radius: 6px;" align="left">
+                                            <div class="col-md-10" style="background-color: ; margin-top: 0px;" align="left">
+                                                <input type="checkbox" class="checkbox large" >
+
+                                                2. Connect your Aptana IDE with your BitBucket account by following this tutorial: http://nealbuerger.com/2013/11/aptana-eclipse-set-up-git-repository-github-bitbucket/
+                                            </div>
+                                            <div class="col-md-2" align="center" style="background-color: #; margin-top:10px; font-size: 20px;">
+
+                                                <div class="panel panel-default"  style="background-color: #F0F0F0">
+                                                    End date
+                                                </div>
+                                                <div class="panel panel-default" style="margin-top: -25px;">
+                                                    01/01/14
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <hr>
+                                        Task files :
+
+                                        <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                                            diagram.docx
+                                        </button>
+                                        <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                                            diagram.docx
+                                        </button>
+                                        <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
+                                            usecaseNarrative.docx
+                                        </button>
+                                    </div>
+
+                                </li>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal9" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                                </button>
+                                                <h2 class="modal-title" id="myModalLabel">usecaseNarrative.docx</h2>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </ul>
+                        </div>
+
+                        <li class="list-group-item" data-toggle="collapse" data-target="#" style="margin-top: 0px;">
+                            <div class="row"  >
+                                <div class="col-xs-6" id="taskList-left">
+                                    Use case narrative
+
+                                </div>
+                                <div class="col-xs-2" id="taskList-left"  style="font-size: 20px;">
+                                    02/02/14 18:11:10
+                                </div>
+                                <div class="col-xs-2" id="taskList-left"  style="font-size: 20px;">
+                                    02/02/14 18:11:10
+                                </div>
+
+                                <div class="col-xs-2" align="center" id="taskList-right">
+                                    <span class="label label-default">in progress</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item" data-toggle="collapse" data-target="#" style="margin-top: 0px;">
+                            <div class="row"  >
+                                <div class="col-xs-6" id="taskList-left">
+                                    Use case narrative
+
+                                </div>
+                                <div class="col-xs-2" id="taskList-left"  style="font-size: 20px;">
+                                    02/02/14 18:11:10
+                                </div>
+                                <div class="col-xs-2" id="taskList-left"  style="font-size: 20px;">
+                                    02/02/14 18:11:10
+                                </div>
+
+                                <div class="col-xs-2" align="center" id="taskList-right">
+                                    <span class="label label-danger">out of date</span>
+                                </div>
+                            </div>
+                        </li>
+
+                        <!-- Modal -->
+
+                    </ul>
+
+                </div>
+
+
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+    </ul>
+
+
+    </div>
+
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="col-md-3" >
+        <div class="panel panel-default" id="taskList-left">
+            <div class="panel-heading">
+                Activity Log
+            </div>
+            <div class="panel-body">
+                <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll">
+                    <div class="panel panel-default" style="margin-right: 13px; " >
+                        <div>
+                            <div id="eachlog" style=" margin-top:5px; "  align="center">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#log1"> 2014-05-07 22:52:45 123ABC </a>
+                            </div>
+                            <div class="collapse in" id="log1"  style="border-bottom: 1px solid #ccc; margin-top: -20px; padding: 5px; font-size: 20px; padding: 10px;" align="left">
+                                A file added to "Document" section in "Project1" project
+
+                            </div>
+                        </div>
+
+                        <div>
+                            <div id="eachlog" style=" margin-top:5px; "  align="center">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#log2"> 2014-05-07 22:52:45 123ABC </a>
+                            </div>
+                            <div class="collapse in" id="log2"  style="border-bottom: 1px solid #ccc; margin-top: -20px; padding: 5px; font-size: 20px; padding: 10px;" align="left">
+                                A file added to "Document" section in "Project1" project
+                            </div>
+                        </div>
+
+                        <div>
+                            <div id="eachlog" style=" margin-top:5px; "  align="center">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#log3"> 2014-05-07 22:52:45 123ABC </a>
+                            </div>
+                            <div class="collapse in" id="log3"  style="border-bottom: 1px solid #ccc; margin-top: -20px; padding: 5px; font-size: 20px; padding: 10px;" align="left">
+                                A file added to "Document" section in "Project1" project
+                            </div>
+                        </div>
+                        <div>
+                            <div id="eachlog" style=" margin-top:5px; "  align="center">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#log4"> 2014-05-07 22:52:45 123ABC </a>
+                            </div>
+                            <div class="collapse in" id="log4"  style="border-bottom: 1px solid #ccc; margin-top: -20px; padding: 5px; font-size: 20px; padding: 10px;" align="left">
+                                A file added to "Document" section in "Project1" project
+                            </div>
+                        </div>
+                        <div>
+                            <div id="eachlog" style=" margin-top:5px; "  align="center">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#log5"> 2014-05-07 22:52:45 123ABC </a>
+                            </div>
+                            <div class="collapse in" id="log5"  style="border-bottom: 1px solid #ccc; margin-top: -20px; padding: 5px; font-size: 20px; padding: 10px;" align="left">
+                                A file added to "Document" section in "Project1" project
+                            </div>
+                        </div>
+                        <div>
+                            <div id="eachlog" style=" margin-top:5px; "  align="center">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#lo6"> 2014-05-07 22:52:45 123ABC </a>
+                            </div>
+                            <div class="collapse in" id="log6"  style="border-bottom: 1px solid #ccc; margin-top: -20px; padding: 5px; font-size: 20px; padding: 10px;" align="left">
+                                A file added to "Document" section in "Project1" project
+                            </div>
+                        </div>
+                        <div>
+                            <div id="eachlog" style=" margin-top:5px; "  align="center">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#log7"> 2014-05-07 22:52:45 123ABC </a>
+                            </div>
+                            <div class="collapse in" id="log7"  style="border-bottom: 1px solid #ccc; margin-top: -20px; padding: 5px; font-size: 20px; padding: 10px;" align="left">
+                                A file added to "Document" section in "Project1" project
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+{% endblock %}

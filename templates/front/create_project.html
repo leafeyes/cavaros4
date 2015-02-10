@@ -1,0 +1,46 @@
+{% extends "front/master.html" %}
+
+{% block content %}
+
+		<!-- CONTENT -->
+		<div class="container white" id="main-content">
+			<div style="margin-left: 30px; ">
+				<h1 id="registerHead">REGISTER</h1>
+				<hr>
+
+				<div class="col-md-4">
+                    <form action="/register/" method="post"  >
+                        {% csrf_token %}
+
+                        Project name <input type="text" class="form-control" placeholder="firstname" name="txt_firstname" required>
+                        <br>
+                        Last name <input type="text" class="form-control" placeholder="lastname" name="txt_lastname" required>
+                        <br>
+
+                        Username <input type="text" class="form-control" placeholder="Username" name="txt_username" required>
+                        <div style="font-size: 14px; text-align: left; color: #8b0000;">
+                           {{ REG_MESSAGE }}
+                        </div>
+                        <br>
+                        Password <input type="password" class="form-control" placeholder="password" name="txt_password" required>
+                        <br>
+
+                        E-mail <input type="email" class="form-control" placeholder="e-mail" name="txt_email" required>
+                        <br>
+                        <br>
+                        <input type="submit" value = "Register" class="btn btn-default" />
+                        <br>
+                        <br>
+                        <br>
+                    </form>
+				</div>
+
+
+
+			</div>
+			<br>
+			<br>
+
+		</div>
+
+{% endblock %}

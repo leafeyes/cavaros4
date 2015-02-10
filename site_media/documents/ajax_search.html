@@ -1,0 +1,5 @@
+{% for pro in pros %}
+    <li>{{ pro.project_name }}</li>
+{% empty %}
+    <li>NO!!</li>
+{% endfor %}

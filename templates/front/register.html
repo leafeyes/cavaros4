@@ -1,0 +1,49 @@
+{% extends "front/master.html" %}
+
+{% block content %}
+
+		<!-- CONTENT -->
+		<div class="container white" id="main-content">
+			<div style="margin-left: 30px; ">
+				<h1 id="registerHead">REGISTER</h1>
+				<hr>
+
+				<div class="col-md-4" >
+                    <form action="/register/" method="post"  style="font-family: thaisansneue; font-size: 25px;">
+                        {% csrf_token %}
+
+                        Username * <input type="text" class="form-control" placeholder="Username" name="txt_username" required style="font-family: arial;">
+                        <div style="font-size: 20px; text-align: left; color: #8b0000; letter-spacing: 1px;">
+                            {{ REG_MESSAGE }}
+                        </div>
+
+                        Password * <input type="password" class="form-control" placeholder="password" name="txt_password" required  style="font-family: arial;">
+
+
+
+                        First name <input type="text" class="form-control" placeholder="firstname" name="txt_firstname" required  style="font-family: arial;">
+                        Last name <input type="text" class="form-control" placeholder="lastname" name="txt_lastname" required  style="font-family: arial;">
+
+
+                        E-mail <input type="email" class="form-control" placeholder="e-mail" name="txt_email" required  style="font-family: arial;">
+                        <br>
+                        <input type="submit" value = "submit" class="btn btn-default"  style="font-family: arial;"/>
+
+                        <a href="/register/">
+                            <input type="submit" value = "reset" class="btn btn-default"  style="font-family: arial;"/>
+                        </a>
+                        <br>
+                        <br>
+                        <br>
+                    </form>
+				</div>
+
+
+
+			</div>
+			<br>
+			<br>
+
+		</div>
+
+{% endblock %}
