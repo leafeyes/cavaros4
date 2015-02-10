@@ -71,7 +71,7 @@ SEARCH_RESULT_TEMPLATE = 'front/projectManager_Dashboard.html'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cavarosDB',
+        'NAME': 'cavaros_db',
         'USERNAME' :  'toshiba',
         'PASSWORD' : '221235'
     }
@@ -96,4 +96,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/site_media/'
-MEDIA_ROOT = '/home/toshiba/cavaros/site_media'
+MEDIA_ROOT = '/home/leafeyes/webapps/cavaros/cavaros/site_media'
