@@ -42,6 +42,9 @@ urlpatterns = patterns('',
     url(r'^addSection2/(?P<project_url>.+)/$', addSection2),
     url(r'^addTaskSection/(?P<project_url>.+)/$', addTask),
     url(r'^addTask/(?P<project_url>.+)/$', addTask),
+    url(r'^addCheckList/(?P<project_url>.+)/$', addCheckList),
+    url(r'^addFile/(?P<project_url>.+)/$', addFile),
+
     url(r'^addMember/$', addMember),
     url(r'^addMember2/(?P<project_url>.+)/$', addMember2),
 

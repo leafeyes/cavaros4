@@ -24,7 +24,7 @@ class projects(models.Model):
 
 
 class image_user(models.Model):
-    imagePath = models.FileField(upload_to='userProfileimage')
+    imagePath = models.FileField(upload_to='userAvatar/')
     user = models.ForeignKey(User)
 
 class projects_users_groupRel(models.Model):

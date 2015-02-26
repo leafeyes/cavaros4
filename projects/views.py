@@ -8,6 +8,8 @@ from projects.models import *
 from projects.views import *
 from sections.models import *
 from tasks.models import *
+from checklist.models import *
+from files.models import *
 
 import datetime
 
@@ -212,6 +214,80 @@ def addTaskSection(request,project_url):
         return HttpResponseRedirect('/projectDetail/'+project_url)
 
 @login_required(login_url='/accounts/login/')
+def addCheckList(request,project_url):
+    dictData = getInitialVariable(request)
+    dictData["USERNAME"] = dictData["USER"].username
+
+    if "POST" in request.method:
+        if request.POST['TaskSelected'] != "":
+            TaskSelected = request.POST['TaskSelected']
+
+        if request.POST['txt_checklistname'] != "":
+            txt_checklistname = request.POST['txt_checklistname']
+
+        if request.POST['txt_checklistdesc'] != "":
+            txt_checklistdesc = request.POST['txt_checklistdesc']
+
+        if request.POST['checklistend_date'] != "":
+            checklistend_date = request.POST['checklistend_date']
+
+        t = tasks.objects.filter(tasks_name=TaskSelected)[0]
+
+        checklist = checklists(
+            checklist_name= txt_checklistname,
+            description = txt_checklistdesc,
+            create_date = datetime.datetime.now(),
+            end_date = checklistend_date,
+            url         = txt_checklistname,
+            tasks    =  t,
+            status   = "INPROGRESS"
+        )
+        checklist.save()
+
+
+        return HttpResponseRedirect('/projectDetail/'+project_url)
+
+@login_required(login_url='/accounts/login/')
+def addFile(request,project_url):
+    dictData = getInitialVariable(request)
+    dictData["USERNAME"] = dictData["USER"].username
+
+    if "POST" in request.method:
+        if request.POST['fileVersion'] != "":
+            fileVersion = request.POST['fileVersion']
+
+        if request.FILES['sentFiles'] != "":
+            sentFiles = request.FILES['sentFiles']
+
+        if request.POST['TaskSelected'] != "":
+            TaskSelected = request.POST['TaskSelected']
+
+        t = tasks.objects.filter(tasks_name=TaskSelected)[0]
+        file = files(
+            file_name= sentFiles.name,
+            create_date = datetime.datetime.now(),
+            url         = sentFiles.name,
+            tasks    =  t,
+            filePath = sentFiles,
+            user = User.objects.filter(id=dictData["USER"].id)[0]
+        )
+        file.save()
+
+        f = files.objects.filter(id=file.id)[0]
+
+        version = files_version(
+            name= fileVersion,
+            create_date = datetime.datetime.now(),
+            file = f ,
+            user =  User.objects.filter(id=dictData["USER"].id)[0]
+        )
+        version.save()
+
+
+        return HttpResponseRedirect('/projectDetail/'+project_url)
+
+
+@login_required(login_url='/accounts/login/')
 def  addMemberSection(request,project_url):
     dictData = getInitialVariable(request)
 
@@ -220,11 +296,12 @@ def  addMemberSection(request,project_url):
         if request.POST['sectionSelectedAddmeberMore'] != "":
             sectionSelectedAddmeberMore = request.POST['sectionSelectedAddmeberMore']
         if request.POST['searchmemberSectionMore'] != "":
-            searchmemberSectionMore = request.POST['searchmemberSectionMore']
+            searchmemberSectionMore = request.POST.getlist('searchmemberSectionMore')
 
-        s = sections.objects.filter(sections_name=sectionSelectedAddmeberMore,project_id=project_url)[0]
-        u = User.objects.filter(username=searchmemberSectionMore)[0]
-        s.user.add(u)
+        for member in searchmemberSectionMore:
+            s = sections.objects.filter(sections_name=sectionSelectedAddmeberMore,project_id=project_url)[0]
+            u = User.objects.filter(username=member)[0]
+            s.user.add(u)
 
 
         return HttpResponseRedirect('/projectDetail/'+project_url)
@@ -237,17 +314,17 @@ def addMemberTask(request,project_url):
         if request.POST['taskSelectedAddmeberMore'] != "":
             taskSelectedAddmeberMore = request.POST['taskSelectedAddmeberMore']
         if request.POST['searchmemberTaskMore'] != "":
-            searchmemberTaskMore = request.POST['searchmemberTaskMore']
+            searchmemberTaskMore = request.POST.getlist('searchmemberTaskMore')
         if request.POST['taskSelectedAddmeberMoreID'] != "":
             taskSelectedAddmeberMoreID = request.POST['taskSelectedAddmeberMoreID']
             object_project = projects.objects.filter(user__id=dictData["USER"].id)[0]
 
+        for member in searchmemberTaskMore:
 
-
-        object_project = projects.objects.filter(user__id=dictData["USER"].id)[0]
-        t = tasks.objects.filter(id=taskSelectedAddmeberMoreID)[0]
-        u = User.objects.filter(username=searchmemberTaskMore)[0]
-        t.user.add(u)
+            object_project = projects.objects.filter(user__id=dictData["USER"].id)[0]
+            t = tasks.objects.filter(id=taskSelectedAddmeberMoreID)[0]
+            u = User.objects.filter(username=member)[0]
+            t.user.add(u)
 
         return HttpResponseRedirect('/projectDetail/'+project_url)
 
@@ -261,19 +338,21 @@ def addMember(request):
     if "POST" in request.method:
 
         if request.POST['searchmember'] != "":
-            members = request.POST['searchmember']
+            members = request.POST.getlist('searchmember')
 
-            object_project = projects.objects.filter(user__id=dictData["USER"].id)[0]
-            u = User.objects.filter(username=members)[0].id
-            object_project.user.add(u)
+            for member in members:
 
-            pug = projects_users_groupRel(
-                user=     u,
-                project = object_project,
-                group =   Group.objects.filter(name='Team Member')[0],
+                object_project = projects.objects.filter(user__id=dictData["USER"].id)[0]
+                u = User.objects.filter(username=member)[0].id
+                object_project.user.add(u)
 
-            )
-            pug.save()
+                pug = projects_users_groupRel(
+                    user=     u,
+                    project = object_project,
+                    group =   Group.objects.filter(name='Team Member')[0],
+
+                )
+                pug.save()
 
             return HttpResponseRedirect('/projectDetail/'+project_url)
 
@@ -288,19 +367,20 @@ def addMember2(request,project_url):
     if "POST" in request.method:
 
         if request.POST['searchmember'] != "":
-            members = request.POST['searchmember']
+            members = request.POST.getlist('searchmember')
 
-            object_project = projects.objects.filter(id=project_url)[0]
-            u = User.objects.filter(username=members)[0]
-            object_project.user.add(u)
+            for member in members:
+                object_project = projects.objects.filter(id=project_url)[0]
+                u = User.objects.filter(username=member)[0]
+                object_project.user.add(u)
 
-            pug = projects_users_groupRel(
-                user=     u,
-                project = object_project,
-                group =   Group.objects.filter(name='Team Member')[0],
+                pug = projects_users_groupRel(
+                    user=     u,
+                    project = object_project,
+                    group =   Group.objects.filter(name='Team Member')[0],
 
-            )
-            pug.save()
+                )
+                pug.save()
 
             return HttpResponseRedirect('/projectDetail/'+project_url)
     return HttpResponseRedirect('/projectDetail/'+project_url)
@@ -356,7 +436,7 @@ def projectDetail(request, project_url):
     dictData = getInitialVariable(request)
 
     dictData["USERNAME"] = dictData["USER"].username
-
+    dictData["USERID"] = dictData["USER"].id
     object_project = projects.objects.filter(id=project_url)[0]
     dictData["PROJECTS_DETAIL"] = object_project
 

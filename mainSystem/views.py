@@ -23,7 +23,7 @@ def changePass(request):
 
 def test(request):
     dictData = getInitialVariable(request)
-    return render(request, 'front/profile.html', dictData)
+    return render(request, 'front/test.html', dictData)
 
 def register(request):
     dictData = getInitialVariable(request)
@@ -156,7 +156,17 @@ def profiles(request,username_url):
 
     projectAll = projects.objects.filter(user__id = dictData["USER"].id )
 
+    userAvatar = image_user.objects.filter(user_id = dictData["USER"].id )
+    if userAvatar.count() > 0:
+        userAvatar = image_user.objects.filter(user_id = dictData["USER"].id ).order_by('-id')[0]
+        dictData["USERAVATAR"] = userAvatar
+    else:
+        userAvatar = image_user.objects.filter(user_id = 1).order_by('-id')[0]
+        dictData["USERAVATAR"] = userAvatar
+
+
     dictData["PROJECTALL"] = projectAll
+    dictData["USERAVATAR"] = userAvatar
     dictData["OWN_PROJECT"] = ownproject
     dictData["ASSIGN_PROJECT"] = assignproject
 
@@ -172,16 +182,16 @@ def profiles_editInfo(request,username_url):
 
     txt_fname=""
     sentFile=""
+
     if request.POST['txt_fname'] != "":
         txt_fname = request.POST['txt_fname']
-    if request.POST['sentFile'] != "":
-        sentFile = request.POST['sentFile']
-
         dictData['USER'].first_name =  txt_fname
         dictData['USER'].save()
+    if request.FILES['sentFiles'] != "":
+        sentFiles = request.FILES['sentFiles']
 
         u = User.objects.filter(username= dictData['USER'])[0]
-        image = image_user(imagePath = sentFile,user = u )
+        image = image_user(imagePath = sentFiles,user = u )
         image.save()
 
     return HttpResponseRedirect('/profiles/'+dictData['USER'].username)
@@ -196,6 +206,16 @@ def profiles_edit(request,username_url):
     dictData['FIRSTNAME'] = dictData['USER'].first_name
     dictData['LASTNAME'] = dictData['USER'].last_name
     dictData['EMAIL'] = dictData['USER'].email
+
+    userAvatar = image_user.objects.filter(user_id = dictData["USER"].id )
+    if userAvatar.count() > 0:
+
+        userAvatar = image_user.objects.filter(user_id = dictData["USER"].id ).order_by('-id')[0]
+        dictData["USERAVATAR"] = userAvatar
+    else:
+        userAvatar = image_user.objects.filter(user_id = 1).order_by('-id')[0]
+        dictData["USERAVATAR"] = userAvatar
+
 
     return render(request, 'front/profile_edit.html', dictData)
 

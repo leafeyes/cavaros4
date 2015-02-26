@@ -42,6 +42,8 @@ INSTALLED_APPS = (
     'ajax_search',
     'sections',
     'tasks',
+    'checklist',
+    'files'
     )
 
 MIDDLEWARE_CLASSES = (
@@ -71,7 +73,7 @@ SEARCH_RESULT_TEMPLATE = 'front/projectManager_Dashboard.html'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cavaros_db',
+        'NAME': 'cavarosDB',
         'USERNAME' :  'toshiba',
         'PASSWORD' : '221235'
     }
@@ -96,4 +98,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/site_media/'
-MEDIA_ROOT = '/home/leafeyes/webapps/cavaros/cavaros/site_media'
+MEDIA_ROOT = '/home/toshiba/cavaros/site_media'

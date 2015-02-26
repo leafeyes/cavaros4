@@ -4,6 +4,31 @@
             src="http://code.jquery.com/jquery-2.0.0.min.js">
     </script>
     <style>
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+            font-size: 20px;
+        }
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            background: red;
+            cursor: inherit;
+            display: block;
+            font-size: 20px;
+        }
+        input[readonly] {
+            background-color: white !important;
+            cursor: text !important;
+            font-size: 20px;
+        }
         #btnMemberSelect .btn{
             background-color: #fff;
             color: #000;
@@ -142,13 +167,8 @@
         #btnMemberSelect7.btn.active span.glyphicon {
             opacity: 1;
         }
-    #btnMemberSelectSection .btn{
-        background-color: #fff;
-        color: #000;
-        border-color: #ccc;
-        font-family: arial;
-        font-size: 16px;
-    }
+
+
         #btnMemberSelectSection .btn.active {
             color: #fff;
             background-color: #41A317;
@@ -163,11 +183,35 @@
         }
     </style>
     <script type="text/javascript">
+
+
+        $(document).on('change', '.btn-file :file', function() {
+            var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+
+        $(document).ready( function() {
+            $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+
+                var input = $(this).parents('.input-group').find(':text'),
+                        log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+                if( input.length ) {
+                    input.val(log);
+                } else {
+                    if( log ) alert(log);
+                }
+
+            });
+        });
+
+
         function reply_click(clicked_id)
         {
             $("#addMoreMember").attr("action", "/addMember2/" + clicked_id+"/");
         }
-
         function addSection_click(clicked_id)
         {
             $("#addMoreSection").attr("action", "/addSection2/" + clicked_id+"/");
@@ -183,6 +227,17 @@
         {
 
             $("#addMoreTaskSection").attr("action", "/addTask/" + clicked_id+"/");
+        }
+
+        function addmCheckList_click(clicked_id)
+        {
+            $("#addMoreCheckList").attr("action", "/addCheckList/" + clicked_id+"/");
+
+        }
+        function addmfile(clicked_id)
+        {
+            $("#addNewFile").attr("action", "/addFile/" + clicked_id+"/");
+
         }
 
         function addMoreMremberSection_click(clicked_id)
@@ -204,13 +259,19 @@
         {
             $("#sectionSelectedAddmeberMore").attr("value", clicked_id);
         }
-        function addTaskMemberMore_click(clicked_id)
+        function addTaskMemberMore_click(clicked_id,taskId)
         {
             $("#taskSelectedAddmeberMore").attr("value", clicked_id);
+            $("#taskIDHide").attr("value", taskId);
         }
-
-    </script>
-    <script>
+        function addCheckList_Click(clicked_id)
+        {
+            $("#TaskSelected").attr("value", clicked_id);
+        }
+        function addFile_Click(clicked_id)
+        {
+            $("#TaskSelectedFile").attr("value", clicked_id);
+        }
 
         $(document).ready(function(){
 
@@ -304,14 +365,14 @@
 
     </script>
     <link href="/site_media/css/style.css" rel="stylesheet">
-
     <link rel="stylesheet" href="/site_media/css/search/normalize.css">
     <link rel="stylesheet" href="/site_media/css/search/stylesheet.css">
     <!--[if IE 8]><script src="js/es5.js"></script><![endif]-->
     <script src="/site_media/js/jquery.js"></script>
     <script src="/site_media/js/index.js"></script>
 
-    <!-- CONTENT -->
+    <!-- --------------------------------------------- MODAL ----------------------------------------------->
+
     <!-- add task modal-->
     <input type="text" value="{{ USERNAME }}" id="username">
     <div class="modal fade" id="addTaskSection" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
@@ -372,7 +433,7 @@
 
                                                         <label class="btn btn-success " id="checkboxL5"  style="width: 240px; font-family: thaisansneue; font-size: 25px;">
 
-                                                            <input type="checkbox" class="checkboxC5" name="{{ user.username }}" id="{{ user.username }}" autocomplete="off" value="{{ user.username }}">
+                                                            <input type="checkbox" class="checkboxC5" name="{{ user.username }}" id="{{ user.username }}tasksection" autocomplete="off" value="{{ user.username }}">
                                                             {{ user.username }}
                                                         </label>
 
@@ -391,7 +452,7 @@
                                                             }
                                                             else {
                                                                 var myBtn = document.getElementById(name),
-                                                                        mySpan = document.createElement("span");
+                                                                mySpan = document.createElement("span");
                                                                 mySpan.innerHTML = myBtn.innerHTML ;
                                                                 myBtn.parentNode.replaceChild(mySpan, myBtn);
                                                             }
@@ -422,7 +483,308 @@
             </div>
         </div>
     </div>
-    <!-- -->
+
+
+    <!-- MODAL ADD MEMBER TO TASK-->
+    <div class="modal fade" id="addMemberToTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-body" >
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <ul class="list-group" id="taskList-left">
+
+                                <form id="addMoreMemberTask" action="/addTaskSection/" method="post" style="font-family: thaisansneue; font-size: 25px;" >
+                                    {% csrf_token %}
+
+                                    <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                        <span class="glyphicon glyphicon-th-list" aria-hidden="true" style=" font-size: 20px;"></span> Task Information
+                                    </div>
+                                    <li class="list-group-item"  >
+                                        Task name:
+                                        <input type="text" class="form-control" value="section name" placeholder="section name"  name="taskSelectedAddmeberMore" id="taskSelectedAddmeberMore"  style="font-family: thaisansneue; font-size: 20px;">
+                                    </li>
+
+                                    <input type="text" class="form-control" value="" placeholder="section name"  name="taskSelectedAddmeberMoreID" id="taskIDHide" required style="font-family: thaisansneue; font-size: 20px;">
+
+                                    <li class="list-group-item">
+                                        Member:
+                                        <p id="s7"></p>
+                                    </li>
+
+                            </ul>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="panel panel-default" id="taskList-left">
+                                <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll" style="height: 350px;">
+
+                                    <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                        <span class="glyphicon glyphicon-user" aria-hidden="true" style=" font-size: 20px;"></span> Add Memebrs
+                                    </div>
+                                    <div style="padding: 15px; margin-top: -10px;" >
+                                        <br>
+                                        <center>
+                                            <div class="list-group col-sm-11" id="Member_resultsTaskSection3">
+                                                {% for user in PROJECTS_DETAIL.user.all %}
+                                                    <div class="btn-group" data-toggle="buttons" id="btnMemberSelect7" style="margin-bottom: 5px;">
+                                                        <label class="btn btn-success " id="checkboxL7"  style="width: 240px; font-family: thaisansneue; font-size: 25px;">
+
+                                                            <input type="checkbox" class="checkboxC7" name="{{ user.username }}" id="{{ user.username }}task" autocomplete="off" value="{{ user.username }}">
+                                                            {{ user.username }}
+                                                        </label>
+
+                                                    </div>
+                                                {% endfor %}
+
+                                                <script>
+
+                                                    $(document).ready(function() {
+                                                        $('#btnMemberSelect7 .checkboxC7').change(function() {
+                                                            var name =$(this).attr("value");
+
+                                                            if ($(this).prop('checked')) {
+                                                                var r= $('<input type="button" value="new button"/>');
+                                                                $( "#s7" ).append( ' <input type="text" name= "searchmemberTaskMore"  id= "'+name+'" class="btn btn-default" style="font-family: thaisansneue;  font-size: 26px;" value="'+name +'"/>' );
+                                                            }
+                                                            else {
+                                                                var myBtn = document.getElementById(name),
+                                                                        mySpan = document.createElement("span");
+                                                                mySpan.innerHTML = myBtn.innerHTML ;
+                                                                myBtn.parentNode.replaceChild(mySpan, myBtn);
+                                                            }
+                                                        });
+                                                    });
+                                                </script>
+                                            </div>
+                                        </center>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" >
+
+                    <button class="btn btn-default btn-md" onClick="addMoreMremberTask_click(this.id)" id="{{PROJECTS_DETAIL.id}}"  data-toggle="modal" data-target="#addSectionT" align="right">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Section
+                    </button>
+
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+
+                </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ADD MEMBER TO SECTION-->
+    <div class="modal fade" id="addMemberToSection" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-body" >
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <ul class="list-group" id="taskList-left">
+
+                                <form id="addMoreMemberSection" action="/addTaskSection/" method="post" style="font-family: thaisansneue; font-size: 25px;" >
+                                    {% csrf_token %}
+
+                                    <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                        <span class="glyphicon glyphicon-th-list" aria-hidden="true" style=" font-size: 20px;"></span> Add member to section
+                                    </div>
+                                    <li class="list-group-item"  >
+                                        Section name:
+                                        <input type="text" class="form-control" value="section name" placeholder="section name"  name="sectionSelectedAddmeberMore" id="sectionSelectedAddmeberMore" required style="font-family: thaisansneue; font-size: 20px;">
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        Member:
+                                        <p id="s6"></p>
+                                    </li>
+
+                            </ul>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="panel panel-default" id="taskList-left">
+                                <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll" style="height: 350px;">
+
+                                    <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                        <span class="glyphicon glyphicon-user" aria-hidden="true" style=" font-size: 20px;"></span> Add Memebrs
+                                    </div>
+                                    <div style="padding: 15px; margin-top: -10px;" >
+                                        <br>
+                                        <center>
+                                            <div class="list-group col-sm-11" >
+                                                {% for user in PROJECTS_DETAIL.user.all %}
+                                                    <div class="btn-group" data-toggle="buttons" id="btnMemberSelect6" style="margin-bottom: 5px;">
+
+                                                        <label class="btn btn-success " id="checkboxL6"  style="width: 240px; font-family: thaisansneue; font-size: 25px;">
+
+                                                            <input type="checkbox" class="checkboxC6" name="{{ user.username }}" id="{{ user.username }}section" autocomplete="off" value="{{ user.username }}">
+                                                            {{ user.username }}
+                                                        </label>
+
+                                                    </div>
+                                                {% endfor %}
+
+                                                <script>
+
+                                                    $(document).ready(function() {
+                                                        $('#btnMemberSelect6 .checkboxC6').change(function() {
+                                                            var name =$(this).attr("value");
+
+                                                            if ($(this).prop('checked')) {
+                                                                var r= $('<input type="button" value="new button"/>');
+                                                                $( "#s6" ).append( ' <input type="text" name= "searchmemberSectionMore"  id= "'+name+'" class="btn btn-default" style="font-family: thaisansneue;  font-size: 26px;" value="'+name +'"/>' );
+                                                            }
+                                                            else {
+                                                                var myBtn = document.getElementById(name),
+                                                                mySpan = document.createElement("span");
+                                                                mySpan.innerHTML = myBtn.innerHTML ;
+                                                                myBtn.parentNode.replaceChild(mySpan, myBtn);
+                                                            }
+                                                        });
+                                                    });
+                                                </script>
+                                            </div>
+                                        </center>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" >
+
+                    <button class="btn btn-default btn-md" onClick="addMoreMremberSection_click(this.id)" id="{{PROJECTS_DETAIL.id}}"  data-toggle="modal" data-target="#addSectionT" align="right">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add member
+                    </button>
+
+                    <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+
+                </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Add Cecklist-->
+
+    <div class="modal fade" id="addCheckList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-body" >
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <ul class="list-group" id="taskList-left">
+
+                                <form id="addMoreCheckList" action="/addCheckList/" method="post" style="font-family: thaisansneue; font-size: 25px;" >
+                                    {% csrf_token %}
+
+                                    <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                        <span class="glyphicon glyphicon-th-list" aria-hidden="true" style=" font-size: 20px;"></span> Checklist Information
+                                    </div>
+                                    <li class="list-group-item"  >
+                                        Task name:
+                                        <input type="text" class="form-control" value="" placeholder="Task name" name="TaskSelected" id="TaskSelected" required style="font-family: thaisansneue; font-size: 20px;">
+                                    </li>
+                                    <li class="list-group-item"  >
+                                        Checklist name:
+                                        <input type="text" class="form-control" placeholder="Checklist name" name="txt_checklistname" required style="font-family: thaisansneue; font-size: 20px;">
+                                    </li>
+                                    <li class="list-group-item">
+                                        Description:
+                                        <input type="text" class="form-control" placeholder="Description name" name="txt_checklistdesc" required style="font-family: thaisansneue; font-size: 20px;">
+                                    </li>
+                                    <li class="list-group-item">
+                                        Due date:
+                                        <input type="date" id="taskStartdatepicker" placeholder="ex. 2015-01-10" class="form-control"  name="checklistend_date" required style="font-family: thaisansneue; font-size: 20px;">
+                                    </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel-footer" >
+
+                    <button class="btn btn-default btn-md" onClick="addmCheckList_click(this.id)" id="{{ PROJECTS_DETAIL.id }}"  data-toggle="modal" data-target="#addSectionT" align="right">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Checklist
+                    </button>
+
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD FILES-->
+    <div class="modal fade" id="addFile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+
+                <div class="modal-body" >
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ul class="list-group" id="taskList-left">
+
+                                <form id="addNewFile" action="/addFile/" enctype="multipart/form-data" method="post" style="font-family: thaisansneue; font-size: 25px;" >
+                                    {% csrf_token %}
+
+                                    <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
+                                        <span class="glyphicon glyphicon-th-list" aria-hidden="true" style=" font-size: 20px;"></span> File Information
+                                    </div>
+                                    <li class="list-group-item"  >
+                                        Task name:
+                                        <input type="text" class="form-control" value="" placeholder="Task name" name="TaskSelected" id="TaskSelectedFile" required style="font-family: thaisansneue; font-size: 20px;">
+                                    </li>
+                                    <li class="list-group-item"  >
+                                       Select a new file:
+                                        <input class="btn btn-default btn-lg" type="file" name="sentFiles" />
+                                    </li>
+                                    <li class="list-group-item"  >
+                                        File version:
+                                        <input type="text" id="" placeholder="ex. version 1.0" class="form-control"  name="fileVersion" required style="font-family: thaisansneue; font-size: 20px;">
+                                    </li>
+
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel-footer" >
+
+                    <button class="btn btn-default btn-md" onClick="addmfile(this.id)" id="{{ PROJECTS_DETAIL.id }}" >
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add File
+                    </button>
+
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- ----------------------------------------------------------------------------------------------------------->
 
     <!-- CONTENT -->
     <div class="container white" id="main-content">
@@ -619,13 +981,13 @@
     <br>
     <ul class="list-group" >
         {% for section in PROJECTS_DETAIL.sections_set.all %}
-
+            <br>
             <li class="list-group-item" style="background: #F4F4F4; ">
 
                 <div class="row">
                     <div class="col-xs-6" >
 
-                        <h4><a id="toggle" class="toggleArrow" data-toggle="collapse" data-parent="#accordion" href="#{{ section.sections_name }}" style="font-size: 10px; color: #C0A16Bc"> ▼▲ </a>&nbsp;&nbsp; Section : <a data-toggle="collapse" data-parent="#accordion" href="#{{ section.sections_name }}info"> {{ section.sections_name }} </a> &nbsp;&nbsp;&nbsp;&nbsp; </h4>
+                        <h4><a id="toggle" class="toggleArrow" data-toggle="collapse" data-parent="#accordion" href="#{{ section.sections_name }}info" style="font-size: 10px; color: #C0A16Bc;"> <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span> </a>&nbsp;&nbsp; Section : <a data-toggle="collapse" data-parent="#accordion" href="#{{ section.sections_name }}info"> {{ section.sections_name }} </a> &nbsp;&nbsp;&nbsp;&nbsp; </h4>
 
                     </div>
                     <div class="col-xs-5" >
@@ -645,6 +1007,9 @@
                     </div>
                 </div>
 
+            </li>
+            <li class="list-group-item" id="taskList-left" style="background: #;">
+                Description: {{ section.description  }}
             </li>
             <li class="list-group-item" id="taskList-left" style="background: #;">
                 <div class="row">
@@ -671,99 +1036,7 @@
                             </button>
 
 
-                            <div class="modal fade" id="addMemberToSection" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
 
-                                        <div class="modal-body" >
-                                            <div class="row">
-                                                <div class="col-sm-8">
-                                                    <ul class="list-group" id="taskList-left">
-
-                                                        <form id="addMoreMemberSection" action="/addTaskSection/" method="post" style="font-family: thaisansneue; font-size: 25px;" >
-                                                            {% csrf_token %}
-
-                                                            <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
-                                                                <span class="glyphicon glyphicon-th-list" aria-hidden="true" style=" font-size: 20px;"></span> Add member to section
-                                                            </div>
-                                                            <li class="list-group-item"  >
-                                                                Section name:
-                                                                <input type="text" class="form-control" value="section name" placeholder="section name"  name="sectionSelectedAddmeberMore" id="sectionSelectedAddmeberMore" required style="font-family: thaisansneue; font-size: 20px;">
-                                                            </li>
-
-                                                            <li class="list-group-item">
-                                                                Member:
-                                                                <p id="s6"></p>
-                                                            </li>
-
-                                                    </ul>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <div class="panel panel-default" id="taskList-left">
-                                                        <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll" style="height: 350px;">
-
-                                                            <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
-                                                                <span class="glyphicon glyphicon-user" aria-hidden="true" style=" font-size: 20px;"></span> Add Memebrs
-                                                            </div>
-                                                            <div style="padding: 15px; margin-top: -10px;" >
-                                                                <br>
-                                                                <center>
-                                                                    <div class="list-group col-sm-11" id="Member_resultsTaskSection">
-                                                                        {% for user in PROJECTS_DETAIL.user.all %}
-                                                                            <div class="btn-group" data-toggle="buttons" id="btnMemberSelect6" style="margin-bottom: 5px;">
-
-                                                                                <label class="btn btn-success " id="checkboxL6"  style="width: 240px; font-family: thaisansneue; font-size: 25px;">
-
-                                                                                    <input type="checkbox" class="checkboxC6" name="{{ user.username }}" id="{{ user.username }}" autocomplete="off" value="{{ user.username }}">
-                                                                                    {{ user.username }}
-                                                                                </label>
-
-                                                                            </div>
-                                                                        {% endfor %}
-
-                                                                        <script>
-
-                                                                            $(document).ready(function() {
-                                                                                $('#btnMemberSelect6 .checkboxC6').change(function() {
-                                                                                    var name =$(this).attr("value");
-
-                                                                                    if ($(this).prop('checked')) {
-                                                                                        var r= $('<input type="button" value="new button"/>');
-                                                                                        $( "#s6" ).append( ' <input type="text" name= "searchmemberSectionMore"  id= "'+name+'" class="btn btn-default" style="font-family: thaisansneue;  font-size: 26px;" value="'+name +'"/>' );
-                                                                                    }
-                                                                                    else {
-                                                                                        var myBtn = document.getElementById(name),
-                                                                                                mySpan = document.createElement("span");
-                                                                                        mySpan.innerHTML = myBtn.innerHTML ;
-                                                                                        myBtn.parentNode.replaceChild(mySpan, myBtn);
-                                                                                    }
-                                                                                });
-                                                                            });
-                                                                        </script>
-                                                                    </div>
-                                                                </center>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-footer" >
-
-                                            <button class="btn btn-default btn-md" onClick="addMoreMremberSection_click(this.id)" id="{{PROJECTS_DETAIL.id}}"  data-toggle="modal" data-target="#addSectionT" align="right">
-                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add member
-                                            </button>
-
-                                                <span class="glyphicon glyphicon-trash"></span>
-                                            </button>
-
-                                        </div>
-
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -786,15 +1059,13 @@
                     </div>
                 </div>
             </li>
+
+
+
             <div id="{{ section.sections_name }}info" class="panel-collapse collapse">
                 <ul class="list-group" >
 
-                    <li class="list-group-item" style="background: #F4F4F4; " id="taskList-left">
-                        Description
-                    </li>
 
-                    <li class="list-group-item" id="taskList-left">
-                        {{ section.description  }}                    </li>
                     <li class="list-group-item" style="background: #fff;">
                         <div class="row" id="taskList-left" align="center">
                             <div class="col-md-3"align="center" >
@@ -887,12 +1158,13 @@
                 </ul>
             </div>
 
+
         {% endfor %}
 
     </ul>
 
     </div>
-
+    <!-- TASK TAB-->
     <div class="tab-pane" id="task">
     <div class="row">
         <div class="col-md-5" style="padding: 10px">
@@ -905,13 +1177,7 @@
             </div>
         </div>
         <div class="col-md-2" style="padding: 10px">
-            <div class="input-group">
-                <input class="form-control" type="text" placeholder="search" >
-												<span class="input-group-btn">
-													<button class="btn btn-default" id="buttonClick" type="button">
-                                                        Go!
-                                                    </button> </span>
-            </div>
+
         </div>
         <div class="col-md-5" align="left" style="padding: 10px" >
             <center>
@@ -984,7 +1250,7 @@
 
                                                                 <div class="btn-group" data-toggle="buttons" id="btnMemberSelectSection" style="margin-bottom: 5px;">
 
-                                                                    <label class="btn btn-success " id="checkboxL4"  style="width: 240px; font-family: thaisansneue; font-size: 25px;">
+                                                                    <label class="btn btn-success " id="checkboxL"  style="width: 240px; font-family: thaisansneue; font-size: 25px;">
 
                                                                         <input type="checkbox" class="checkboxCSection" name="{{ section.sections_name }}" id="{{ section.sections_name }}" autocomplete="off" value="{{ section.sections_name }}">
                                                                         {{ section.sections_name }}
@@ -1124,12 +1390,13 @@
     <ul class="list-group" >
     {% for section in PROJECTS_DETAIL.sections_set.all %}
         {% for task in section.tasks_set.all %}
+            <br>
             <li class="list-group-item" style="background: #F4F4F4; ">
 
                 <div class="row">
                     <div class="col-xs-6" >
 
-                        <h4><a id="toggle" class="toggleArrow" data-toggle="collapse" data-parent="#accordion" href="#{{ task.id }}{{ task.name }}tall" style="font-size: 10px; color: #C0A16Bc"> ▼▲ </a>&nbsp;&nbsp; Task : <a data-toggle="collapse" data-parent="#accordion" href="#{{ task.id }}{{ task.name }}tall"> {{ task.tasks_name }} </a> &nbsp;&nbsp;&nbsp;&nbsp; </h4>
+                        <h4><a id="toggle" class="toggleArrow" data-toggle="collapse" data-parent="#accordion" href="#{{ task.id }}{{ task.name }}tall" style="font-size: 10px; color:#C0A16Bc;">  <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span> </a>&nbsp;&nbsp; Task : <a data-toggle="collapse" data-parent="#accordion" href="#{{ task.id }}{{ task.name }}tall"> {{ task.tasks_name }} </a> &nbsp;&nbsp;&nbsp;&nbsp; </h4>
 
                     </div>
                     <div class="col-xs-5" >
@@ -1152,6 +1419,8 @@
             </li>
             <li class="list-group-item" id="taskList-left">
                 Section: {{ section.sections_name }}
+                <br>
+                Description: {{ task.description }}
             </li>
             <li class="list-group-item" id="taskList-left" style="background: #;">
                 <div class="row">
@@ -1164,106 +1433,11 @@
                     <div class="col-md-3">
                         <div id="{{ task.id }}{{ task.name }}edit" class="panel-collapse collapse" >
 
-                            <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#addMemberToTask" onClick="addTaskMemberMore_click(this.id)" id="{{task.tasks_name}}"  align="right">
+                            <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#addMemberToTask" onClick="addTaskMemberMore_click(this.id,{{ task.id }})" id="{{task.tasks_name}}"  align="right">
                                 <span class="glyphicon glyphicon-plus"></span> <span class="glyphicon glyphicon-user"></span>
                             </button>
 
 
-                            <div class="modal fade" id="addMemberToTask" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-
-                                        <div class="modal-body" >
-                                            <div class="row">
-                                                <div class="col-sm-8">
-                                                    <ul class="list-group" id="taskList-left">
-
-                                                        <form id="addMoreMemberTask" action="/addTaskSection/" method="post" style="font-family: thaisansneue; font-size: 25px;" >
-                                                            {% csrf_token %}
-
-                                                            <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
-                                                                <span class="glyphicon glyphicon-th-list" aria-hidden="true" style=" font-size: 20px;"></span> Task Information
-                                                            </div>
-                                                            <li class="list-group-item"  >
-                                                                Task name:
-                                                                <input type="text" class="form-control" value="section name" placeholder="section name"  name="taskSelectedAddmeberMore" id="taskSelectedAddmeberMore" required style="font-family: thaisansneue; font-size: 20px;">
-                                                            </li>
-
-                                                                <input type="text" class="form-control" value="{{ task.id }}" placeholder="section name"  name="taskSelectedAddmeberMoreID" id="taskIDHide" required style="font-family: thaisansneue; font-size: 20px;">
-
-                                                            <li class="list-group-item">
-                                                                Member:
-                                                                <p id="s7"></p>
-                                                            </li>
-
-                                                    </ul>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <div class="panel panel-default" id="taskList-left">
-                                                        <div data-spy="scroll" class="scrollspy-example" data-offset="0" data-target="#tableScroll" style="height: 350px;">
-
-                                                            <div class="panel-heading" style="font-family: thaisansneue; font-size: 25px;">
-                                                                <span class="glyphicon glyphicon-user" aria-hidden="true" style=" font-size: 20px;"></span> Add Memebrs
-                                                            </div>
-                                                            <div style="padding: 15px; margin-top: -10px;" >
-                                                                <br>
-                                                                <center>
-                                                                    <div class="list-group col-sm-11" id="Member_resultsTaskSection">
-                                                                        {% for user in PROJECTS_DETAIL.user.all %}
-                                                                            <div class="btn-group" data-toggle="buttons" id="btnMemberSelect7" style="margin-bottom: 5px;">
-                                                                                <label class="btn btn-success " id="checkboxL7"  style="width: 240px; font-family: thaisansneue; font-size: 25px;">
-
-                                                                                    <input type="checkbox" class="checkboxC7" name="{{ user.username }}" id="{{ user.username }}" autocomplete="off" value="{{ user.username }}">
-                                                                                    {{ user.username }}
-                                                                                </label>
-
-                                                                            </div>
-                                                                        {% endfor %}
-
-                                                                        <script>
-
-                                                                            $(document).ready(function() {
-                                                                                $('#btnMemberSelect7 .checkboxC7').change(function() {
-                                                                                    var name =$(this).attr("value");
-
-                                                                                    if ($(this).prop('checked')) {
-                                                                                        var r= $('<input type="button" value="new button"/>');
-                                                                                        $( "#s7" ).append( ' <input type="text" name= "searchmemberTaskMore"  id= "'+name+'" class="btn btn-default" style="font-family: thaisansneue;  font-size: 26px;" value="'+name +'"/>' );
-                                                                                    }
-                                                                                    else {
-                                                                                        var myBtn = document.getElementById(name),
-                                                                                                mySpan = document.createElement("span");
-                                                                                        mySpan.innerHTML = myBtn.innerHTML ;
-                                                                                        myBtn.parentNode.replaceChild(mySpan, myBtn);
-                                                                                    }
-                                                                                });
-                                                                            });
-                                                                        </script>
-                                                                    </div>
-                                                                </center>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-footer" >
-
-                                            <button class="btn btn-default btn-md" onClick="addMoreMremberTask_click(this.id)" id="{{PROJECTS_DETAIL.id}}"  data-toggle="modal" data-target="#addSectionT" align="right">
-                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Section
-                                            </button>
-
-                                            <button type="button" class="btn btn-default btn-sm">
-                                                <span class="glyphicon glyphicon-trash"></span>
-                                            </button>
-
-                                        </div>
-
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -1287,15 +1461,10 @@
                     </div>
                 </div>
             </li>
+
             <div id="{{ task.id }}{{ task.name }}tall" class="panel-collapse  collapse" style="margin-top: -5px;">
             <ul class="list-group" id="taskList-left">
-            <li class="list-group-item" style="background: #F4F4F4; " id="taskList-left">
-                Description
-            </li>
 
-            <li class="list-group-item" id="taskList-left">
-                {{ task.description }}
-            </li>
             <li class="list-group-item" style="background: #fff;">
                 <div class="row" id="taskList-left" align="center">
                     <div class="col-md-3"align="center" >
@@ -1333,81 +1502,99 @@
 
                 </div>
             </li>
+            <li class="list-group-item" style="background: #F4F4F4;   ">
+                <div class="row">
+                    <div class="col-md-9">
+                        Task files
+                    </div>
+                    <div class="col-md-3" align="right">
+
+                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#addFile" onClick="addFile_Click(this.id)" id="{{task.tasks_name}}"  align="right">
+                            <span class="glyphicon glyphicon-plus"></span> <span class="  glyphicon glyphicon-file"></span>
+                        </button>
+
+
+                    </div>
+                </div>
+            </li>
+            </li>
+            <li class="list-group-item" style="background: #FFF;   ">
+
+                <center>
+                <table class="table">
+                    <thead>
+                    <tr style="font-size: 18px;">
+                        <th>file type</th>
+                        <th>file name</th>
+                        <th>date modified</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td scope="row"><img src="/site_media/img/word_icon.png" class="img-responsive" width="30"></td>
+                        <td> <a href="#"  data-toggle="modal" data-target="#myModal9"  >diagram.docx</a></td>
+                        <td>2015 01 10</td>
+
+                    </tr>
+                    <tr >
+                        <td scope="row"><img src="/site_media/img/word_icon.png" class="img-responsive" width="30"></td>
+                        <td> <a href="#"  data-toggle="modal" data-target="#myModal9"  >diagram.docx</a></td>
+                        <td>2015 01 10</td>
+
+                    </tr>
+
+                    </tbody>
+                </table>
+                </center>
+            </li>
 
             <li class="list-group-item" style="background: #F4F4F4;   ">
-                Task check list
-            </li>
-            <li class="list-group-item" style="background: #; ">
+                <div class="row">
+                    <div class="col-md-9">
+                    Task check list
+                    </div>
+                    <div class="col-md-3" align="right">
 
-                <div class="panel panel-default" align="left" style="margin-top: 10px; padding: 10px;">
-                    <div class="row" style="background-color: #;  border-radius: 6px;" align="left">
-                        <div class="col-md-10" style="background-color: ; margin-top: 0px;" align="left">
-                            <input type="checkbox" class="checkbox large" >
+                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#addCheckList" onClick="addCheckList_Click(this.id)" id="{{task.tasks_name}}"  align="right">
+                            <span class="glyphicon glyphicon-plus"></span> <span class=" glyphicon glyphicon-th-list"></span>
+                        </button>
 
-                            1. Register at BitBucket.org (http://www.bitbucket.org). Please using your MU email ( @student.mahidol.ac.th or @student.mahidol.edu ) in registration because you will get Unlimited Plan automatically (Unlimited members per team).
-                        </div>
-                        <div class="col-md-2" align="center" style="background-color: #; margin-top:10px; font-size: 20px;">
-
-                            <div class="panel panel-default"  style="background-color: #F0F0F0">
-                                End date
-                            </div>
-                            <div class="panel panel-default" style="margin-top: -25px;">
-                                01/01/14
-                            </div>
-
-                        </div>
 
                     </div>
-
-                    <hr>
-                    Task files :
-
-                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
-                        diagram.docx
-                    </button>
-                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
-                        diagram.docx
-                    </button>
-                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
-                        usecaseNarrative.docx
-                    </button>
                 </div>
-
-                <div class="panel panel-default" align="left" style="margin-top: 10px; padding: 10px;">
-                    <div class="row" style="background-color: #;  border-radius: 6px;" align="left">
-                        <div class="col-md-10" style="background-color: ; margin-top: 0px;" align="left">
-                            <input type="checkbox" class="checkbox large" >
-
-                            2. Connect your Aptana IDE with your BitBucket account by following this tutorial: http://nealbuerger.com/2013/11/aptana-eclipse-set-up-git-repository-github-bitbucket/
-                        </div>
-                        <div class="col-md-2" align="center" style="background-color: #; margin-top:10px; font-size: 20px;">
-
-                            <div class="panel panel-default"  style="background-color: #F0F0F0">
-                                End date
-                            </div>
-                            <div class="panel panel-default" style="margin-top: -25px;">
-                                01/01/14
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <hr>
-                    Task files :
-
-                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
-                        diagram.docx
-                    </button>
-                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
-                        diagram.docx
-                    </button>
-                    <button class="btn btn-default" id="buttonClick" type="button" data-toggle="modal" data-target="#myModal9" style="font-family: 'arial'; background-color: #E6E6E6">
-                        usecaseNarrative.docx
-                    </button>
-                </div>
-
             </li>
+
+
+
+                <li class="list-group-item" style="background: #; ">
+                    {% for checklist in task.checklists_set.all %}
+                        <div class="panel panel-default" align="left" style="margin-top: 10px; padding: 10px;">
+                            <div class="row" style="background-color: #;  border-radius: 6px;" align="left">
+                                <div class="col-md-10" style="background-color: ; margin-top: 0px;" align="left">
+                                    <input type="checkbox" class="checkbox large" >
+
+                                    {{ forloop.counter }}. {{ checklist.checklist_name }}
+                                    <br>
+                                    {{ checklist.description }}
+                                </div>
+                                <div class="col-md-2" align="center" style="background-color: #; margin-top:10px; font-size: 20px;">
+
+                                    <div class="panel panel-default"  style="background-color: #F0F0F0">
+                                        End date
+                                    </div>
+                                    <div class="panel panel-default" style="margin-top: -25px;">
+                                        {{ checklist.end_date }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    {% endfor %}
+                </li>
+
 
             <!-- Modal -->
             <div class="modal fade" id="myModal9" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"align="left">
@@ -1669,14 +1856,14 @@
     <ul class="list-group"  style="font-size:20px;">
     {% for user in PROJECTS_DETAIL.user.all %}
 
-
+        <br>
 
                 <li class="list-group-item" style="background: #F4F4F4; ">
 
                     <div class="row">
                         <div class="col-xs-6" >
 
-                            <a id="toggle" class="toggleArrow" data-toggle="collapse" data-parent="#accordion" href="#member1" style="font-size: 10px; color: #C0A16Bc"> ▼▲ </a>&nbsp;&nbsp;
+                            <a id="toggle" class="toggleArrow" data-toggle="collapse" data-parent="#accordion" href="#member1" style="font-size: 10px; color: #C0A16Bc"> <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span> </a>&nbsp;&nbsp;
                             Member :
                             <a data-toggle="collapse" data-parent="#accordion" href="#member1"> {{ user.username }} </a>
                             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -1690,8 +1877,13 @@
                 <li class="list-group-item" id="taskList-left" style="background: #;">
                     Position:
                     {% for group in user.groups.all %}
+                        {% if group.name == "Project Manager" and user.id == USERID%}
+                            {{ group.name }}
+                        {% endif %}
+                        {% if group.name == "Team Member" and user.id != USERID %}
+                            {{ group.name }}
+                        {% endif %}
 
-                        {{ group.name}}
                     {% endfor %}
                     <br>
                     <br>
@@ -1907,4 +2099,133 @@
         </div>
     </div>
     </div>
+
+
+    <script type="text/javascript">
+        //###################################################################
+        // Author: ricocheting.com
+        // Version: v3.0
+        // Date: 2014-09-05
+        // Description: displays the amount of time until the "dateFuture" entered below.
+
+        var CDown = function() {
+            this.state = 0;
+            // if initialized
+            this.counts = [];
+            // array holding countdown date objects and id to print to {d:new Date(2013,11,18,18,54,36), id:"countbox1"}
+            this.interval = null;
+            // setInterval object
+        }
+
+        CDown.prototype = {
+            init : function() {
+                this.state = 1;
+                var self = this;
+                this.interval = window.setInterval(function() {
+                    self.tick();
+                }, 1000);
+            },
+            add : function(date, id) {
+                this.counts.push({
+                    d : date,
+                    id : id
+                });
+                this.tick();
+                if (this.state == 0)
+                    this.init();
+            },
+            expire : function(idxs) {
+                for (var x in idxs) {
+                    this.display(this.counts[idxs[x]], "OUT OF DATE");
+                    this.counts.splice(idxs[x], 1);
+                }
+            },
+            format : function(r) {
+                var out = "";
+                if (r.d != 0) {
+                    out += r.d + " " + ((r.d == 1) ? "day" : "days") + " / ";
+                }
+                if (r.h != 0) {
+                    out += r.h + " " + ((r.h == 1) ? "hour" : "hrs") + ": ";
+                }
+                out += r.m + " " + ((r.m == 1) ? "min" : "min") + ": ";
+                out += r.s + " " + ((r.s == 1) ? "sec" : "sec") + ": ";
+
+                return out.substr(0, out.length - 2);
+            },
+            math : function(work) {
+                var y = w = d = h = m = s = ms = 0;
+
+                ms = ("" + ((work % 1000) + 1000)).substr(1, 3);
+                work = Math.floor(work / 1000);
+                //kill the "milliseconds" so just secs
+
+                y = Math.floor(work / 31536000);
+                //years (no leapyear support)
+                w = Math.floor(work / 604800);
+                //weeks
+                d = Math.floor(work / 86400);
+                //days
+                work = work % 86400;
+
+                h = Math.floor(work / 3600);
+                //hours
+                work = work % 3600;
+
+                m = Math.floor(work / 60);
+                //minutes
+                work = work % 60;
+
+                s = Math.floor(work);
+                //seconds
+
+                return {
+                    y : y,
+                    w : w,
+                    d : d,
+                    h : h,
+                    m : m,
+                    s : s,
+                    ms : ms
+                };
+            },
+            tick : function() {
+                var now = (new Date()).getTime(), expired = [], cnt = 0, amount = 0;
+
+                if (this.counts)
+                    for (var idx = 0, n = this.counts.length; idx < n; ++idx) {
+                        cnt = this.counts[idx];
+                        amount = cnt.d.getTime() - now;
+                        //calc milliseconds between dates
+
+                        // if time is already past
+                        if (amount < 0) {
+                            expired.push(idx);
+                        }
+                        // date is still good
+                        else {
+                            this.display(cnt, this.format(this.math(amount)));
+                        }
+                    }
+
+                // deal with any expired
+                if (expired.length > 0)
+                    this.expire(expired);
+
+                // if no active counts, stop updating
+                if (this.counts.length == 0)
+                    window.clearTimeout(this.interval);
+
+            },
+            display : function(cnt, msg) {
+                document.getElementById(cnt.id).innerHTML = msg;
+            }
+        };
+
+        window.onload = function() {
+            var cdown = new CDown();
+
+            cdown.add(new Date(2015, 10, 10, 15, 43, 30), "countbox1");
+        };
+    </script>
 {% endblock %}

@@ -683,7 +683,7 @@
                                 <div align="left">
                                     <ul class="list-group">
 
-                                        {% for i in eachProjectINDB.user.all %}
+                                        {% for u in eachProjectINDB.user.all %}
                                             <li class="list-group-item" class="list-group-item disabled">
                                                 <div class="row"  >
                                                     <div class="col-xs-8" id="taskList-left">
@@ -691,11 +691,11 @@
                                                     </div>
 
                                                     <div class="col-xs-4" align="center" id="taskList-right">
-                                                        {% for group in i.groups.all %}
-                                                            {% if group.name == "Project Manager" and i.id == USERID%}
+                                                        {% for group in u.groups.all %}
+                                                            {% if group.name == "Project Manager" and u.id == USERID%}
                                                                 <span class="label label-danger" id="userRole" >{{ group.name }}</span>
                                                             {% endif %}
-                                                            {% if group.name == "Team Member" and i.id != USERID %}
+                                                            {% if group.name == "Team Member" and u.id != USERID %}
                                                                 <span class="label label-default" id="userRole" >{{ group.name }}</span>
                                                             {% endif %}
                                                             <br>
